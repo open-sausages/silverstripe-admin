@@ -1,51 +1,6 @@
+require('./exports');
 // Legacy translation handler
 require('i18n.js');
-
-// Expose fields (see webpack config for matching "externals" config)
-require('expose-loader?SilverStripeComponent!lib/SilverStripeComponent');
-require('expose-loader?Backend!lib/Backend');
-require('expose-loader?Injector!lib/Injector');
-require('expose-loader?reduxFieldReducer!lib/reduxFieldReducer');
-require('expose-loader?schemaFieldValues!lib/schemaFieldValues');
-require('expose-loader?FormAlert!components/FormAlert/FormAlert');
-require('expose-loader?FieldHolder!components/FieldHolder/FieldHolder');
-require('expose-loader?Form!components/Form/Form');
-require('expose-loader?FormConstants!components/Form/FormConstants');
-require('expose-loader?FormAction!components/FormAction/FormAction');
-require('expose-loader?SchemaActions!state/schema/SchemaActions');
-require('expose-loader?FormBuilder!components/FormBuilder/FormBuilder');
-require('expose-loader?FormBuilderLoader!containers/FormBuilderLoader/FormBuilderLoader');
-require('expose-loader?FormBuilderModal!components/FormBuilderModal/FormBuilderModal');
-require('expose-loader?InsertLinkModal!containers/InsertLinkModal/InsertLinkModal');
-require('expose-loader?RecordsActions!state/records/RecordsActions');
-require('expose-loader?GridField!components/GridField/GridField');
-require('expose-loader?GridFieldCell!components/GridField/GridFieldCell');
-require('expose-loader?GridFieldHeader!components/GridField/GridFieldHeader');
-require('expose-loader?GridFieldHeaderCell!components/GridField/GridFieldHeaderCell');
-require('expose-loader?GridFieldRow!components/GridField/GridFieldRow');
-require('expose-loader?GridFieldTable!components/GridField/GridFieldTable');
-require('expose-loader?Accordion!components/Accordion/Accordion');
-require('expose-loader?AccordionBlock!components/Accordion/AccordionBlock');
-require('expose-loader?HiddenField!components/HiddenField/HiddenField');
-require('expose-loader?ListGroup!components/ListGroup/ListGroup');
-require('expose-loader?ListGroupItem!components/ListGroup/ListGroupItem');
-require('expose-loader?TextField!components/TextField/TextField');
-require('expose-loader?LiteralField!components/LiteralField/LiteralField');
-require('expose-loader?Toolbar!components/Toolbar/Toolbar');
-require('expose-loader?Breadcrumb!components/Breadcrumb/Breadcrumb');
-require('expose-loader?TreeDropdownFieldNode!components/TreeDropdownField/TreeDropdownFieldNode');
-require('expose-loader?TreeDropdownFieldMenu!components/TreeDropdownField/TreeDropdownFieldMenu');
-require('expose-loader?TreeDropdownField!components/TreeDropdownField/TreeDropdownField');
-require('expose-loader?BreadcrumbsActions!state/breadcrumbs/BreadcrumbsActions');
-require('expose-loader?RecordsActionTypes!state/records/RecordsActionTypes');
-require('expose-loader?Badge!components/Badge/Badge');
-require('expose-loader?Preview!components/Preview/Preview');
-require('expose-loader?Config!lib/Config');
-require('expose-loader?DataFormat!lib/DataFormat');
-require('expose-loader?ReducerRegister!lib/ReducerRegister');
-require('expose-loader?ReactRouteRegister!lib/ReactRouteRegister');
-require('expose-loader?Router!lib/Router');
-require('expose-loader?TinyMCEActionRegistrar!lib/TinyMCEActionRegistrar');
 
 // Legacy CMS
 require('../legacy/sspath.js');

@@ -12,8 +12,8 @@
     "node": "^6.x"
   },
   "scripts": {
-    "build": "NODE_ENV=production webpack -p --bail --progress",
-    "watch": "NODE_ENV=development webpack --watch --progress",
+    "build": "node ./generate-exports && NODE_ENV=production webpack -p --bail --progress",
+    "watch": "node ./generate-exports && NODE_ENV=development webpack --watch --progress",
     "css": "WEBPACK_CHILD=css npm run build",
     "test": "jest",
     "coverage": "jest --coverage",

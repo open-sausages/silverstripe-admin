@@ -2,7 +2,7 @@
 
 import React from 'react';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
-import 'bootstrap-collapse';
+import 'BootstrapCollapse';
 
 class AccordionBlock extends SilverStripeComponent {
   render() {
