@@ -128,24 +128,17 @@ module.exports = moment;
 
 /***/ }),
 
-/***/ 1857:
+/***/ 1858:
 /***/ (function(module, exports) {
 
 module.exports = ApolloClient;
 
 /***/ }),
 
-/***/ 1858:
-/***/ (function(module, exports) {
-
-module.exports = Backend;
-
-/***/ }),
-
 /***/ 1859:
 /***/ (function(module, exports) {
 
-module.exports = BootstrapCollapse;
+module.exports = Backend;
 
 /***/ }),
 
@@ -185,283 +178,105 @@ exports.default = TreeDropdownFieldNode;
 /***/ 1860:
 /***/ (function(module, exports) {
 
-module.exports = FormAction;
+module.exports = BootstrapCollapse;
 
 /***/ }),
 
 /***/ 1861:
 /***/ (function(module, exports) {
 
-module.exports = FormBuilder;
+module.exports = FormAction;
 
 /***/ }),
 
 /***/ 1862:
 /***/ (function(module, exports) {
 
-module.exports = FormBuilderLoader;
+module.exports = FormBuilder;
 
 /***/ }),
 
 /***/ 1863:
 /***/ (function(module, exports) {
 
-module.exports = GridField;
+module.exports = FormBuilderLoader;
 
 /***/ }),
 
 /***/ 1864:
 /***/ (function(module, exports) {
 
-module.exports = LiteralField;
+module.exports = GridField;
 
 /***/ }),
 
 /***/ 1865:
 /***/ (function(module, exports) {
 
-module.exports = Page;
+module.exports = LiteralField;
 
 /***/ }),
 
 /***/ 1866:
 /***/ (function(module, exports) {
 
-module.exports = ReactRouteRegister;
+module.exports = Page;
 
 /***/ }),
 
 /***/ 1867:
 /***/ (function(module, exports) {
 
-module.exports = RecordsActions;
+module.exports = ReactRouteRegister;
 
 /***/ }),
 
 /***/ 1868:
 /***/ (function(module, exports) {
 
-module.exports = ReducerRegister;
+module.exports = RecordsActions;
 
 /***/ }),
 
 /***/ 1869:
 /***/ (function(module, exports) {
 
-module.exports = ReduxThunk;
+module.exports = ReducerRegister;
 
 /***/ }),
 
 /***/ 1870:
 /***/ (function(module, exports) {
 
-module.exports = Router;
+module.exports = ReduxThunk;
 
 /***/ }),
 
 /***/ 1871:
 /***/ (function(module, exports) {
 
-module.exports = reduxFieldReducer;
+module.exports = Router;
 
 /***/ }),
 
 /***/ 1872:
 /***/ (function(module, exports) {
 
-module.exports = validator;
+module.exports = reduxFieldReducer;
 
 /***/ }),
 
 /***/ 1873:
 /***/ (function(module, exports) {
 
-/* (ignored) */
+module.exports = validator;
 
 /***/ }),
 
 /***/ 1874:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _toposort = __webpack_require__(1805);
-
-var _toposort2 = _interopRequireDefault(_toposort);
-
-var _redux = __webpack_require__(56);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var BEFORE = 'before';
-
-var AFTER = 'after';
-
-var GRAPH_HEAD = '__HEAD__';
-
-var GRAPH_TAIL = '__TAIL__';
-
-var PRIORITIES = [BEFORE, AFTER];
-
-var validateMeta = function validateMeta(meta) {
-  PRIORITIES.forEach(function (k) {
-    if (typeof meta[k] !== 'undefined' && typeof meta[k] !== 'string' && !Array.isArray(meta[k])) {
-      throw new Error('Middleware key ' + k + ' must be a string or array');
-    }
-  });
-};
-
-var createDisplayName = function createDisplayName(original, transforms) {
-  var componentName = original.displayName || original.name || 'Component';
-  var names = [componentName].concat(_toConsumableArray(transforms));
-
-  return names.reduce(function (acc, curr) {
-    return curr + '(' + acc + ')';
-  });
-};
-
-var checkWildcard = function checkWildcard(middleware) {
-  var wildcard = null;
-  PRIORITIES.forEach(function (PRIORITY) {
-    if (middleware[PRIORITY].includes('*')) {
-      if (middleware[PRIORITY].length > 1) {
-        throw new Error('\n          Key ' + PRIORITY + ' on ' + middleware.name + ' should only specify one key \n          if using the "*" wildcard\n        ');
-      } else if (wildcard) {
-        throw new Error('\n          Cannot specify a ' + PRIORITY + ' rule on ' + middleware.name + ' if a wildcard \n          has been specified\n        ');
-      } else {
-        wildcard = PRIORITY;
-      }
-    }
-  });
-
-  return wildcard;
-};
-
-var MiddlewareRegistry = function () {
-  function MiddlewareRegistry(serviceName) {
-    _classCallCheck(this, MiddlewareRegistry);
-
-    this.service = null;
-    this._middlewares = [];
-    this._factoryCache = {};
-  }
-
-  _createClass(MiddlewareRegistry, [{
-    key: 'setSerivice',
-    value: function setSerivice(service) {
-      this.service = service;
-    }
-  }, {
-    key: 'sort',
-    value: function sort() {
-      var _this = this;
-
-      var GRAPH_INIT = [GRAPH_HEAD, GRAPH_TAIL];
-      var graph = [GRAPH_INIT];
-      var sortedMiddlewares = [];
-      this._middlewares.forEach(function (middleware) {
-        var name = middleware.name;
-
-        var wildcard = checkWildcard(middleware);
-        if (wildcard === AFTER) {
-          graph.push([GRAPH_TAIL, name]);
-        } else if (wildcard === BEFORE) {
-          graph.push([name, GRAPH_HEAD]);
-        } else {
-          graph.push([name, GRAPH_TAIL]);
-          graph.push([GRAPH_HEAD, name]);
-
-          middleware[BEFORE].forEach(function (beforeEntry) {
-            graph.push([name, beforeEntry]);
-          });
-          middleware[AFTER].forEach(function (afterEntry) {
-            graph.push([afterEntry, name]);
-          });
-        }
-      });
-
-      (0, _toposort2.default)(graph).filter(function (item) {
-        return !GRAPH_INIT.includes(item);
-      }).forEach(function (name) {
-        sortedMiddlewares = sortedMiddlewares.concat(_this._middlewares.filter(function (m) {
-          return m.name === name;
-        }));
-      });
-
-      this._middlewares = sortedMiddlewares;
-    }
-  }, {
-    key: 'add',
-    value: function add(meta, factory, context) {
-      validateMeta(meta);
-      var normalised = _extends({}, meta, { factory: factory, context: context });
-
-      PRIORITIES.forEach(function (k) {
-        if (!Array.isArray(meta[k])) {
-          normalised[k] = meta[k] ? [meta[k]] : [];
-        } else {
-          normalised[k] = meta[k];
-        }
-      });
-
-      if (PRIORITIES.every(function (p) {
-        return !normalised[p].length;
-      })) {
-        normalised[AFTER] = [GRAPH_HEAD];
-        normalised[BEFORE] = [GRAPH_TAIL];
-      }
-
-      this._middlewares.push(normalised);
-    }
-  }, {
-    key: 'getMatchesForContext',
-    value: function getMatchesForContext(context) {
-      var requestedContext = context.split('.');
-      return this._middlewares.filter(function (middleware) {
-        return middleware.context.every(function (part, index) {
-          return part === '*' || requestedContext[index] === part;
-        });
-      });
-    }
-  }, {
-    key: 'getFactory',
-    value: function getFactory(context) {
-      if (!this.service) {
-        throw new Error('\n          MiddlewareRegistry.getFactory() invoked before a service was assigned.\n          You must first call .setService(service) to set the core service to be\n          decorated with middleware.\n       ');
-      }
-      if (!this._factoryCache[context]) {
-        var matches = this.getMatchesForContext(context);
-        var factories = matches.map(function (m) {
-          return m.factory;
-        });
-        var names = matches.map(function (m) {
-          return m.displayName || m.name;
-        });
-        var factory = _redux.compose.apply(undefined, _toConsumableArray(factories))(this.service);
-        factory.name = createDisplayName(this.service, names);
-      }
-
-      return this._factoryCache[context];
-    }
-  }]);
-
-  return MiddlewareRegistry;
-}();
-
-exports.default = MiddlewareRegistry;
+/* (ignored) */
 
 /***/ }),
 
@@ -1636,7 +1451,7 @@ _jQuery2.default.entwine('ss', function (jQuery) {
 /***/ 249:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["InsertLinkModal"] = __webpack_require__(963);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["InsertLinkModal"] = __webpack_require__(964);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -2629,13 +2444,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _toposort = __webpack_require__(1805);
-
-var _toposort2 = _interopRequireDefault(_toposort);
-
-var _redux = __webpack_require__(56);
-
-var _MiddlewareRegistry = __webpack_require__(1874);
+var _MiddlewareRegistry = __webpack_require__(926);
 
 var _MiddlewareRegistry2 = _interopRequireDefault(_MiddlewareRegistry);
 
@@ -2663,7 +2472,7 @@ var reset = function reset(silent) {
   if (!silent) {
     console.warn('\n      Injector.__reset__() should only be used in dev mode. Using\n      this method in production will likely break.\n    ');
   }
-  [middlewares, container].forEach(function (o) {
+  [middlewareRegistries, container].forEach(function (o) {
     Object.keys(o).forEach(function (k) {
       return delete o[k];
     });
@@ -2675,13 +2484,13 @@ var reset = function reset(silent) {
 var customise = function customise(meta, key, factory) {
   var _key$split = key.split('.'),
       _key$split2 = _toArray(_key$split),
-      service = _key$split2[0],
+      serviceName = _key$split2[0],
       context = _key$split2.slice(1);
 
-  if (!middlewares[service]) {
-    middlewares[service] = new _MiddlewareRegistry2.default(service);
+  if (!middlewareRegistries[serviceName]) {
+    middlewareRegistries[serviceName] = new _MiddlewareRegistry2.default(serviceName);
   }
-  middlewares[service].add(meta, factory, context);
+  middlewareRegistries[serviceName].add(meta, factory, context);
 };
 
 var register = function register(key, value) {
@@ -2690,28 +2499,40 @@ var register = function register(key, value) {
   if (container[key] && params.force !== true) {
     throw new Error('\n      Tried to register service ' + key + ' more than once. This practice is discouraged. Consider\n      using Injector.update() to enhance the service rather than override it completely.\n      Otherwise, invoke the register() function with { force: true } as the third argument.\n     ');
   }
-  container[key] = function (context) {
+
+  container[key] = function () {
     return value;
   };
 };
 
-var get = function get(key) {
-  var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '*';
-
+var get = function get(key, context) {
   if (!initialised) {
     throw new Error('\n      Injector.get(): Attempted to access DI layer before it was initialised.\n      Did you forget to invoke Injector.load()?');
   }
   if (!container[key]) {
     throw new Error('Injector.get(): Component ' + key + ' does not exist');
   }
-  return container[key](context);
+
+  var service = container[key](context);
+  if (service.displayName && service.displayName.match(/\]$/)) {
+    return service;
+  }
+
+  var componentName = service.displayName || service.name || 'Component';
+  componentName += '[' + key;
+  if (context) {
+    componentName += '.' + context;
+  }
+  componentName += ']';
+  service.displayName = componentName;
+  console.log('got service', key, 'with context', context, 'display name is ', componentName);
+  return service;
 };
 
 var transform = function transform(name, callback) {
   var priorities = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   var meta = _extends({ name: name }, priorities);
-  validateMeta(meta);
   callback(function (key, wrapper, displayName) {
     customise(_extends({}, meta, { displayName: displayName }), key, wrapper);
   });
@@ -2722,9 +2543,11 @@ var load = function load() {
     return middlewareRegistries.hasOwnProperty(key);
   }).forEach(function (key) {
     var registry = middlewareRegistries[key];
-    registry.setService(container[key]);
+    registry.setService(container[key]());
     registry.sort();
-    container[key] = registry.getFactory;
+    container[key] = function (context) {
+      return registry.getFactory(context);
+    };
   });
   initialised = true;
 };
@@ -2996,7 +2819,7 @@ var _Injector2 = _interopRequireDefault(_Injector);
 
 var _redux = __webpack_require__(56);
 
-var _reduxThunk = __webpack_require__(1869);
+var _reduxThunk = __webpack_require__(1870);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
@@ -3008,27 +2831,27 @@ var _Config = __webpack_require__(748);
 
 var _Config2 = _interopRequireDefault(_Config);
 
-var _ReducerRegister = __webpack_require__(1868);
+var _ReducerRegister = __webpack_require__(1869);
 
 var _ReducerRegister2 = _interopRequireDefault(_ReducerRegister);
 
-var _ConfigActions = __webpack_require__(930);
+var _ConfigActions = __webpack_require__(931);
 
 var configActions = _interopRequireWildcard(_ConfigActions);
 
-var _ConfigReducer = __webpack_require__(931);
+var _ConfigReducer = __webpack_require__(932);
 
 var _ConfigReducer2 = _interopRequireDefault(_ConfigReducer);
 
-var _SchemaReducer = __webpack_require__(933);
+var _SchemaReducer = __webpack_require__(934);
 
 var _SchemaReducer2 = _interopRequireDefault(_SchemaReducer);
 
-var _RecordsReducer = __webpack_require__(932);
+var _RecordsReducer = __webpack_require__(933);
 
 var _RecordsReducer2 = _interopRequireDefault(_RecordsReducer);
 
-var _BreadcrumbsReducer = __webpack_require__(929);
+var _BreadcrumbsReducer = __webpack_require__(930);
 
 var _BreadcrumbsReducer2 = _interopRequireDefault(_BreadcrumbsReducer);
 
@@ -3036,11 +2859,11 @@ var _registerComponents = __webpack_require__(889);
 
 var _registerComponents2 = _interopRequireDefault(_registerComponents);
 
-var _TreeDropdownFieldReducer = __webpack_require__(934);
+var _TreeDropdownFieldReducer = __webpack_require__(935);
 
 var _TreeDropdownFieldReducer2 = _interopRequireDefault(_TreeDropdownFieldReducer);
 
-var _apolloClient = __webpack_require__(1857);
+var _apolloClient = __webpack_require__(1858);
 
 var _apolloClient2 = _interopRequireDefault(_apolloClient);
 
@@ -7456,7 +7279,7 @@ _jQuery2.default.path = path;
 /***/ 783:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Accordion"] = __webpack_require__(935);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Accordion"] = __webpack_require__(936);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7464,7 +7287,7 @@ _jQuery2.default.path = path;
 /***/ 784:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["AccordionBlock"] = __webpack_require__(936);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["AccordionBlock"] = __webpack_require__(937);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7472,7 +7295,7 @@ _jQuery2.default.path = path;
 /***/ 786:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Backend"] = __webpack_require__(965);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Backend"] = __webpack_require__(966);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7480,7 +7303,7 @@ _jQuery2.default.path = path;
 /***/ 787:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Badge"] = __webpack_require__(937);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Badge"] = __webpack_require__(938);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7488,7 +7311,7 @@ _jQuery2.default.path = path;
 /***/ 789:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Breadcrumb"] = __webpack_require__(938);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Breadcrumb"] = __webpack_require__(939);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7496,7 +7319,7 @@ _jQuery2.default.path = path;
 /***/ 790:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["BreadcrumbsActions"] = __webpack_require__(977);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["BreadcrumbsActions"] = __webpack_require__(978);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7504,7 +7327,7 @@ _jQuery2.default.path = path;
 /***/ 791:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Config"] = __webpack_require__(966);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Config"] = __webpack_require__(967);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7512,7 +7335,7 @@ _jQuery2.default.path = path;
 /***/ 792:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["DataFormat"] = __webpack_require__(967);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["DataFormat"] = __webpack_require__(968);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7520,7 +7343,7 @@ _jQuery2.default.path = path;
 /***/ 794:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FieldHolder"] = __webpack_require__(939);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FieldHolder"] = __webpack_require__(940);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7528,7 +7351,7 @@ _jQuery2.default.path = path;
 /***/ 795:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Form"] = __webpack_require__(940);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Form"] = __webpack_require__(941);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7536,7 +7359,7 @@ _jQuery2.default.path = path;
 /***/ 796:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormAction"] = __webpack_require__(942);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormAction"] = __webpack_require__(943);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7544,7 +7367,7 @@ _jQuery2.default.path = path;
 /***/ 797:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormAlert"] = __webpack_require__(943);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormAlert"] = __webpack_require__(944);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7552,7 +7375,7 @@ _jQuery2.default.path = path;
 /***/ 798:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormBuilder"] = __webpack_require__(944);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormBuilder"] = __webpack_require__(945);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7560,7 +7383,7 @@ _jQuery2.default.path = path;
 /***/ 799:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormBuilderLoader"] = __webpack_require__(962);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormBuilderLoader"] = __webpack_require__(963);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7568,7 +7391,7 @@ _jQuery2.default.path = path;
 /***/ 800:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormBuilderModal"] = __webpack_require__(945);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormBuilderModal"] = __webpack_require__(946);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7576,7 +7399,7 @@ _jQuery2.default.path = path;
 /***/ 801:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormConstants"] = __webpack_require__(941);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["FormConstants"] = __webpack_require__(942);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7584,7 +7407,7 @@ _jQuery2.default.path = path;
 /***/ 804:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridField"] = __webpack_require__(946);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridField"] = __webpack_require__(947);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7592,7 +7415,7 @@ _jQuery2.default.path = path;
 /***/ 805:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldCell"] = __webpack_require__(947);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldCell"] = __webpack_require__(948);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7600,7 +7423,7 @@ _jQuery2.default.path = path;
 /***/ 806:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldHeader"] = __webpack_require__(948);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldHeader"] = __webpack_require__(949);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7608,7 +7431,7 @@ _jQuery2.default.path = path;
 /***/ 807:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldHeaderCell"] = __webpack_require__(949);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldHeaderCell"] = __webpack_require__(950);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7616,7 +7439,7 @@ _jQuery2.default.path = path;
 /***/ 808:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldRow"] = __webpack_require__(950);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldRow"] = __webpack_require__(951);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7624,7 +7447,7 @@ _jQuery2.default.path = path;
 /***/ 809:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldTable"] = __webpack_require__(951);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["GridFieldTable"] = __webpack_require__(952);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7632,7 +7455,7 @@ _jQuery2.default.path = path;
 /***/ 810:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["HiddenField"] = __webpack_require__(952);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["HiddenField"] = __webpack_require__(953);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7640,7 +7463,7 @@ _jQuery2.default.path = path;
 /***/ 811:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Injector"] = __webpack_require__(968);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Injector"] = __webpack_require__(969);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7648,7 +7471,7 @@ _jQuery2.default.path = path;
 /***/ 813:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ListGroup"] = __webpack_require__(953);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ListGroup"] = __webpack_require__(954);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7656,7 +7479,7 @@ _jQuery2.default.path = path;
 /***/ 814:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ListGroupItem"] = __webpack_require__(954);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ListGroupItem"] = __webpack_require__(955);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7664,7 +7487,7 @@ _jQuery2.default.path = path;
 /***/ 815:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["LiteralField"] = __webpack_require__(955);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["LiteralField"] = __webpack_require__(956);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7672,7 +7495,7 @@ _jQuery2.default.path = path;
 /***/ 817:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Preview"] = __webpack_require__(956);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Preview"] = __webpack_require__(957);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7680,7 +7503,7 @@ _jQuery2.default.path = path;
 /***/ 827:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ReactRouteRegister"] = __webpack_require__(969);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ReactRouteRegister"] = __webpack_require__(970);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7688,7 +7511,7 @@ _jQuery2.default.path = path;
 /***/ 831:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["RecordsActionTypes"] = __webpack_require__(978);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["RecordsActionTypes"] = __webpack_require__(979);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7696,7 +7519,7 @@ _jQuery2.default.path = path;
 /***/ 832:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["RecordsActions"] = __webpack_require__(979);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["RecordsActions"] = __webpack_require__(980);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7704,7 +7527,7 @@ _jQuery2.default.path = path;
 /***/ 833:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ReducerRegister"] = __webpack_require__(970);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ReducerRegister"] = __webpack_require__(971);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7712,7 +7535,7 @@ _jQuery2.default.path = path;
 /***/ 837:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Router"] = __webpack_require__(971);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Router"] = __webpack_require__(972);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7720,7 +7543,7 @@ _jQuery2.default.path = path;
 /***/ 838:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["SchemaActions"] = __webpack_require__(980);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["SchemaActions"] = __webpack_require__(981);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7728,7 +7551,7 @@ _jQuery2.default.path = path;
 /***/ 839:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ShortcodeSerialiser"] = __webpack_require__(972);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["ShortcodeSerialiser"] = __webpack_require__(973);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7736,7 +7559,7 @@ _jQuery2.default.path = path;
 /***/ 840:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["SilverStripeComponent"] = __webpack_require__(973);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["SilverStripeComponent"] = __webpack_require__(974);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7744,7 +7567,7 @@ _jQuery2.default.path = path;
 /***/ 842:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TextField"] = __webpack_require__(957);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TextField"] = __webpack_require__(958);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7752,7 +7575,7 @@ _jQuery2.default.path = path;
 /***/ 843:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TinyMCEActionRegistrar"] = __webpack_require__(974);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TinyMCEActionRegistrar"] = __webpack_require__(975);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7760,7 +7583,7 @@ _jQuery2.default.path = path;
 /***/ 844:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Toolbar"] = __webpack_require__(958);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Toolbar"] = __webpack_require__(959);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7768,7 +7591,7 @@ _jQuery2.default.path = path;
 /***/ 845:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TreeDropdownField"] = __webpack_require__(959);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TreeDropdownField"] = __webpack_require__(960);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7776,7 +7599,7 @@ _jQuery2.default.path = path;
 /***/ 846:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TreeDropdownFieldMenu"] = __webpack_require__(960);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TreeDropdownFieldMenu"] = __webpack_require__(961);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7784,7 +7607,7 @@ _jQuery2.default.path = path;
 /***/ 847:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TreeDropdownFieldNode"] = __webpack_require__(961);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TreeDropdownFieldNode"] = __webpack_require__(962);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7792,7 +7615,7 @@ _jQuery2.default.path = path;
 /***/ 855:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["reduxFieldReducer"] = __webpack_require__(975);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["reduxFieldReducer"] = __webpack_require__(976);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7800,7 +7623,7 @@ _jQuery2.default.path = path;
 /***/ 856:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["schemaFieldValues"] = __webpack_require__(976);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["schemaFieldValues"] = __webpack_require__(977);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
@@ -7843,11 +7666,11 @@ var _Config = __webpack_require__(748);
 
 var _Config2 = _interopRequireDefault(_Config);
 
-var _Router = __webpack_require__(1870);
+var _Router = __webpack_require__(1871);
 
 var _Router2 = _interopRequireDefault(_Router);
 
-var _ReactRouteRegister = __webpack_require__(1866);
+var _ReactRouteRegister = __webpack_require__(1867);
 
 var _ReactRouteRegister2 = _interopRequireDefault(_ReactRouteRegister);
 
@@ -8085,7 +7908,7 @@ var _OptionsetField = __webpack_require__(909);
 
 var _OptionsetField2 = _interopRequireDefault(_OptionsetField);
 
-var _GridField = __webpack_require__(1863);
+var _GridField = __webpack_require__(1864);
 
 var _GridField2 = _interopRequireDefault(_GridField);
 
@@ -8101,7 +7924,7 @@ var _HeaderField = __webpack_require__(903);
 
 var _HeaderField2 = _interopRequireDefault(_HeaderField);
 
-var _LiteralField = __webpack_require__(1864);
+var _LiteralField = __webpack_require__(1865);
 
 var _LiteralField2 = _interopRequireDefault(_LiteralField);
 
@@ -8129,7 +7952,7 @@ var _TabItem = __webpack_require__(912);
 
 var _TabItem2 = _interopRequireDefault(_TabItem);
 
-var _FormAction = __webpack_require__(1860);
+var _FormAction = __webpack_require__(1861);
 
 var _FormAction2 = _interopRequireDefault(_FormAction);
 
@@ -11593,7 +11416,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _validator = __webpack_require__(1872);
+var _validator = __webpack_require__(1873);
 
 var _validator2 = _interopRequireDefault(_validator);
 
@@ -11800,6 +11623,206 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _toposort = __webpack_require__(1806);
+
+var _toposort2 = _interopRequireDefault(_toposort);
+
+var _redux = __webpack_require__(56);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var BEFORE = 'before';
+
+var AFTER = 'after';
+
+var GRAPH_HEAD = '__HEAD__';
+
+var GRAPH_TAIL = '__TAIL__';
+
+var PRIORITIES = [BEFORE, AFTER];
+
+var GLOBAL_CONTEXT = '__GLOBAL__';
+
+var WILDCARD = '*';
+
+var validateMeta = function validateMeta(meta) {
+  PRIORITIES.forEach(function (k) {
+    if (typeof meta[k] !== 'undefined' && typeof meta[k] !== 'string' && !Array.isArray(meta[k])) {
+      throw new Error('Middleware key ' + k + ' must be a string or array');
+    }
+  });
+};
+
+var createDisplayName = function createDisplayName(original, transforms) {
+  var componentName = original.displayName || original.name || 'Component';
+  var names = [componentName].concat(_toConsumableArray(transforms));
+
+  return names.reduce(function (acc, curr) {
+    return curr + '(' + acc + ')';
+  });
+};
+
+var checkWildcard = function checkWildcard(middleware) {
+  var wildcard = null;
+  PRIORITIES.forEach(function (PRIORITY) {
+    if (middleware[PRIORITY].includes(WILDCARD)) {
+      if (middleware[PRIORITY].length > 1) {
+        throw new Error('\n          Key ' + PRIORITY + ' on ' + middleware.name + ' should only specify one key \n          if using the "' + WILDCARD + '" wildcard\n        ');
+      } else if (wildcard) {
+        throw new Error('\n          Cannot specify a ' + PRIORITY + ' rule on ' + middleware.name + ' if a wildcard \n          has been specified\n        ');
+      } else {
+        wildcard = PRIORITY;
+      }
+    }
+  });
+
+  return wildcard;
+};
+
+var MiddlewareRegistry = function () {
+  function MiddlewareRegistry() {
+    _classCallCheck(this, MiddlewareRegistry);
+
+    this.service = null;
+    this._middlewares = [];
+    this._factoryCache = {};
+  }
+
+  _createClass(MiddlewareRegistry, [{
+    key: 'setService',
+    value: function setService(service) {
+      this.service = service;
+    }
+  }, {
+    key: 'sort',
+    value: function sort() {
+      var _this = this;
+
+      var GRAPH_INIT = [GRAPH_HEAD, GRAPH_TAIL];
+      var graph = [GRAPH_INIT];
+      var sortedMiddlewares = [];
+      this._middlewares.forEach(function (middleware) {
+        var name = middleware.name;
+
+        var wildcard = checkWildcard(middleware);
+        if (wildcard === AFTER) {
+          graph.push([GRAPH_TAIL, name]);
+        } else if (wildcard === BEFORE) {
+          graph.push([name, GRAPH_HEAD]);
+        } else {
+          graph.push([name, GRAPH_TAIL]);
+          graph.push([GRAPH_HEAD, name]);
+
+          middleware[BEFORE].forEach(function (beforeEntry) {
+            graph.push([name, beforeEntry]);
+          });
+          middleware[AFTER].forEach(function (afterEntry) {
+            graph.push([afterEntry, name]);
+          });
+        }
+      });
+
+      (0, _toposort2.default)(graph).filter(function (item) {
+        return !GRAPH_INIT.includes(item);
+      }).forEach(function (name) {
+        sortedMiddlewares = sortedMiddlewares.concat(_this._middlewares.filter(function (m) {
+          return m.name === name;
+        }));
+      });
+
+      this._middlewares = sortedMiddlewares;
+    }
+  }, {
+    key: 'add',
+    value: function add(meta, factory, contextList) {
+      validateMeta(meta);
+
+      var context = contextList;
+      if (!context || !context.length) {
+        context = GLOBAL_CONTEXT;
+      } else if (!Array.isArray(context)) {
+        context = [context];
+      }
+
+      var normalised = _extends({}, meta, { factory: factory, context: context });
+
+      PRIORITIES.forEach(function (k) {
+        if (!Array.isArray(meta[k])) {
+          normalised[k] = meta[k] ? [meta[k]] : [];
+        } else {
+          normalised[k] = meta[k];
+        }
+      });
+
+      if (PRIORITIES.every(function (p) {
+        return !normalised[p].length;
+      })) {
+        normalised[AFTER] = [GRAPH_HEAD];
+        normalised[BEFORE] = [GRAPH_TAIL];
+      }
+
+      this._middlewares.push(normalised);
+    }
+  }, {
+    key: 'getMatchesForContext',
+    value: function getMatchesForContext(context) {
+      var requestedContext = context.split('.');
+      return this._middlewares.filter(function (middleware) {
+        return middleware.context === GLOBAL_CONTEXT || middleware.context.every(function (part, index) {
+          return part === WILDCARD || requestedContext[index] === part;
+        });
+      });
+    }
+  }, {
+    key: 'getFactory',
+    value: function getFactory() {
+      var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : GLOBAL_CONTEXT;
+
+      if (!this.service) {
+        throw new Error('\n          MiddlewareRegistry.getFactory() invoked before a service was assigned.\n          You must first call .setService(service) to set the core service to be\n          decorated with middleware.\n       ');
+      }
+      if (!this._factoryCache[context]) {
+        var matches = this.getMatchesForContext(context);
+        var factories = matches.map(function (m) {
+          return m.factory;
+        });
+        var names = matches.map(function (m) {
+          return m.displayName || m.name;
+        });
+        var factory = _redux.compose.apply(undefined, _toConsumableArray(factories))(this.service);
+        factory.displayName = createDisplayName(this.service, names);
+        this._factoryCache[context] = factory;
+      }
+
+      return this._factoryCache[context];
+    }
+  }]);
+
+  return MiddlewareRegistry;
+}();
+
+exports.default = MiddlewareRegistry;
+
+/***/ }),
+
+/***/ 927:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -11874,7 +11897,7 @@ exports.default = inject;
 
 /***/ }),
 
-/***/ 927:
+/***/ 928:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11944,7 +11967,7 @@ exports.default = provideInjector;
 
 /***/ }),
 
-/***/ 928:
+/***/ 929:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11974,7 +11997,7 @@ exports.default = withInjector;
 
 /***/ }),
 
-/***/ 929:
+/***/ 930:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12015,7 +12038,7 @@ exports.default = reducer;
 
 /***/ }),
 
-/***/ 930:
+/***/ 931:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12041,7 +12064,7 @@ function setConfig(config) {
 
 /***/ }),
 
-/***/ 931:
+/***/ 932:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12080,7 +12103,7 @@ exports.default = configReducer;
 
 /***/ }),
 
-/***/ 932:
+/***/ 933:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12181,7 +12204,7 @@ exports.default = recordsReducer;
 
 /***/ }),
 
-/***/ 933:
+/***/ 934:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12252,7 +12275,7 @@ function schemaReducer() {
 
 /***/ }),
 
-/***/ 934:
+/***/ 935:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12271,7 +12294,7 @@ var _TreeDropdownFieldActionTypes = __webpack_require__(408);
 
 var _TreeDropdownFieldActionTypes2 = _interopRequireDefault(_TreeDropdownFieldActionTypes);
 
-var _reduxFieldReducer = __webpack_require__(1871);
+var _reduxFieldReducer = __webpack_require__(1872);
 
 var _reduxFieldReducer2 = _interopRequireDefault(_reduxFieldReducer);
 
@@ -12393,7 +12416,7 @@ function treeDropdownFieldReducer() {
 
 /***/ }),
 
-/***/ 935:
+/***/ 936:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12451,7 +12474,7 @@ exports.default = Accordion;
 
 /***/ }),
 
-/***/ 936:
+/***/ 937:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12471,7 +12494,7 @@ var _SilverStripeComponent = __webpack_require__(13);
 
 var _SilverStripeComponent2 = _interopRequireDefault(_SilverStripeComponent);
 
-__webpack_require__(1859);
+__webpack_require__(1860);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12537,7 +12560,7 @@ exports.default = AccordionBlock;
 
 /***/ }),
 
-/***/ 937:
+/***/ 938:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12578,7 +12601,7 @@ exports.default = Badge;
 
 /***/ }),
 
-/***/ 938:
+/***/ 939:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12710,7 +12733,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps)(Breadcrumb);
 
 /***/ }),
 
-/***/ 939:
+/***/ 940:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12900,7 +12923,7 @@ exports.default = fieldHolder;
 
 /***/ }),
 
-/***/ 940:
+/***/ 941:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13040,7 +13063,7 @@ exports.default = Form;
 
 /***/ }),
 
-/***/ 941:
+/***/ 942:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13054,7 +13077,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 942:
+/***/ 943:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13241,7 +13264,7 @@ exports.default = FormAction;
 
 /***/ }),
 
-/***/ 943:
+/***/ 944:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13367,7 +13390,7 @@ exports.default = FormAlert;
 
 /***/ }),
 
-/***/ 944:
+/***/ 945:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13404,7 +13427,7 @@ var _Validator = __webpack_require__(925);
 
 var _Validator2 = _interopRequireDefault(_Validator);
 
-var _Backend = __webpack_require__(1858);
+var _Backend = __webpack_require__(1859);
 
 var _Backend2 = _interopRequireDefault(_Backend);
 
@@ -13532,8 +13555,11 @@ var FormBuilder = function (_SilverStripeComponen) {
     key: 'buildComponent',
     value: function buildComponent(props) {
       var componentProps = props;
+      var schemaContext = this.props.schema.id.split('/').map(function (part) {
+        return '' + part.charAt(0).toUpperCase() + part.slice(1);
+      }).join('.');
 
-      var SchemaComponent = componentProps.schemaComponent !== null ? this.context.injector.get(componentProps.schemaComponent) : this.getComponentForDataType(componentProps.schemaType);
+      var SchemaComponent = componentProps.schemaComponent !== null ? this.context.injector.get(componentProps.schemaComponent, schemaContext) : this.getComponentForDataType(componentProps.schemaType);
 
       if (SchemaComponent === null) {
         return null;
@@ -13773,7 +13799,7 @@ exports.default = (0, _Injector.withInjector)(FormBuilder);
 
 /***/ }),
 
-/***/ 945:
+/***/ 946:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13799,7 +13825,7 @@ var _SilverStripeComponent = __webpack_require__(13);
 
 var _SilverStripeComponent2 = _interopRequireDefault(_SilverStripeComponent);
 
-var _FormBuilderLoader = __webpack_require__(1862);
+var _FormBuilderLoader = __webpack_require__(1863);
 
 var _FormBuilderLoader2 = _interopRequireDefault(_FormBuilderLoader);
 
@@ -14016,7 +14042,7 @@ exports.default = FormBuilderModal;
 
 /***/ }),
 
-/***/ 946:
+/***/ 947:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14074,7 +14100,7 @@ var _FormConstants = __webpack_require__(897);
 
 var _FormConstants2 = _interopRequireDefault(_FormConstants);
 
-var _RecordsActions = __webpack_require__(1867);
+var _RecordsActions = __webpack_require__(1868);
 
 var actions = _interopRequireWildcard(_RecordsActions);
 
@@ -14270,7 +14296,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 947:
+/***/ 948:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14354,7 +14380,7 @@ exports.default = GridFieldCell;
 
 /***/ }),
 
-/***/ 948:
+/***/ 949:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14413,7 +14439,7 @@ exports.default = GridFieldHeader;
 
 /***/ }),
 
-/***/ 949:
+/***/ 950:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14472,7 +14498,7 @@ exports.default = GridFieldHeaderCell;
 
 /***/ }),
 
-/***/ 950:
+/***/ 951:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14528,7 +14554,7 @@ exports.default = GridFieldRow;
 
 /***/ }),
 
-/***/ 951:
+/***/ 952:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14624,7 +14650,7 @@ exports.default = GridFieldTable;
 
 /***/ }),
 
-/***/ 952:
+/***/ 953:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14703,7 +14729,7 @@ exports.default = HiddenField;
 
 /***/ }),
 
-/***/ 953:
+/***/ 954:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14768,7 +14794,7 @@ exports.default = ListGroup;
 
 /***/ }),
 
-/***/ 954:
+/***/ 955:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14839,7 +14865,7 @@ exports.default = ListGroupItem;
 
 /***/ }),
 
-/***/ 955:
+/***/ 956:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14920,7 +14946,7 @@ exports.default = LiteralField;
 
 /***/ }),
 
-/***/ 956:
+/***/ 957:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15076,7 +15102,7 @@ exports.default = Preview;
 
 /***/ }),
 
-/***/ 957:
+/***/ 958:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15206,7 +15232,7 @@ exports.default = (0, _FieldHolder2.default)(TextField);
 
 /***/ }),
 
-/***/ 958:
+/***/ 959:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15297,7 +15323,7 @@ exports.default = Toolbar;
 
 /***/ }),
 
-/***/ 959:
+/***/ 960:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15945,7 +15971,7 @@ exports.default = (0, _FieldHolder2.default)(ConnectedTreeDropdownField);
 
 /***/ }),
 
-/***/ 960:
+/***/ 961:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16152,7 +16178,7 @@ exports.default = TreeDropdownFieldMenu;
 
 /***/ }),
 
-/***/ 961:
+/***/ 962:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16185,7 +16211,7 @@ exports.default = TreeDropdownFieldNode;
 
 /***/ }),
 
-/***/ 962:
+/***/ 963:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16229,7 +16255,7 @@ var _Form = __webpack_require__(896);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _FormBuilder = __webpack_require__(1861);
+var _FormBuilder = __webpack_require__(1862);
 
 var _FormBuilder2 = _interopRequireDefault(_FormBuilder);
 
@@ -16551,7 +16577,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 963:
+/***/ 964:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16729,7 +16755,7 @@ exports.default = (0, _reactRedux.connect)(function () {
 
 /***/ }),
 
-/***/ 965:
+/***/ 966:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17000,7 +17026,7 @@ exports.default = backend;
 
 /***/ }),
 
-/***/ 966:
+/***/ 967:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17048,7 +17074,7 @@ exports.default = Config;
 
 /***/ }),
 
-/***/ 967:
+/***/ 968:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17113,7 +17139,7 @@ function getFileExtension(filename) {
 
 /***/ }),
 
-/***/ 968:
+/***/ 969:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17124,15 +17150,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.inject = exports.withInjector = exports.provideInjector = undefined;
 
-var _provideInjector = __webpack_require__(927);
+var _provideInjector = __webpack_require__(928);
 
 var _provideInjector2 = _interopRequireDefault(_provideInjector);
 
-var _withInjector = __webpack_require__(928);
+var _withInjector = __webpack_require__(929);
 
 var _withInjector2 = _interopRequireDefault(_withInjector);
 
-var _inject = __webpack_require__(926);
+var _inject = __webpack_require__(927);
 
 var _inject2 = _interopRequireDefault(_inject);
 
@@ -17149,7 +17175,7 @@ exports.default = _Container2.default;
 
 /***/ }),
 
-/***/ 969:
+/***/ 970:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17269,7 +17295,7 @@ exports.default = window.ss.routeRegister;
 
 /***/ }),
 
-/***/ 970:
+/***/ 971:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17326,7 +17352,7 @@ exports.default = window.ss.reducerRegister;
 
 /***/ }),
 
-/***/ 971:
+/***/ 972:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17336,7 +17362,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _page = __webpack_require__(1865);
+var _page = __webpack_require__(1866);
 
 var _page2 = _interopRequireDefault(_page);
 
@@ -17402,7 +17428,7 @@ exports.default = window.ss.router;
 
 /***/ }),
 
-/***/ 972:
+/***/ 973:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17498,7 +17524,7 @@ exports.default = ShortcodeSerialiser;
 
 /***/ }),
 
-/***/ 973:
+/***/ 974:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17577,7 +17603,7 @@ exports.default = SilverStripeComponent;
 
 /***/ }),
 
-/***/ 974:
+/***/ 975:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17620,7 +17646,7 @@ exports.default = window.ss.tinymceactions;
 
 /***/ }),
 
-/***/ 975:
+/***/ 976:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17658,7 +17684,7 @@ function getFieldReducer(state, action) {
 
 /***/ }),
 
-/***/ 976:
+/***/ 977:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17755,7 +17781,7 @@ function schemaFieldValues(schema, state) {
 
 /***/ }),
 
-/***/ 977:
+/***/ 978:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17781,7 +17807,7 @@ function setBreadcrumbs(breadcrumbs) {
 
 /***/ }),
 
-/***/ 978:
+/***/ 979:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17807,7 +17833,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ 979:
+/***/ 980:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17926,7 +17952,7 @@ function deleteRecord(recordType, id, method, url) {
 
 /***/ }),
 
-/***/ 980:
+/***/ 981:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -59,11 +59,11 @@ const reset = (silent) => {
  *  previous state of composition
  */
 const customise = (meta, key, factory) => {
-  const [service, ...context] = key.split('.');
-  if (!middlewareRegistries[service]) {
-    middlewareRegistries[service] = new MiddlewareRegistry(service);
+  const [serviceName, ...context] = key.split('.');
+  if (!middlewareRegistries[serviceName]) {
+    middlewareRegistries[serviceName] = new MiddlewareRegistry(serviceName);
   }
-  middlewareRegistries[service].add(
+  middlewareRegistries[serviceName].add(
     meta,
     factory,
     context
@@ -106,7 +106,21 @@ const get = (key, context) => {
   if (!container[key]) {
     throw new Error(`Injector.get(): Component ${key} does not exist`);
   }
-  return container[key](context);
+
+  const service = container[key](context);
+  if (service.displayName && service.displayName.match(/\]$/)) {
+    return service;
+  }
+
+  let componentName = (service.displayName || service.name || 'Component');
+  componentName += `[${key}`;
+  if (context) {
+    componentName += `.${context}`;
+  }
+  componentName += ']';
+  service.displayName = componentName;
+  console.log('got service', key, 'with context', context, 'display name is ', componentName);
+  return service;
 };
 
 /**
