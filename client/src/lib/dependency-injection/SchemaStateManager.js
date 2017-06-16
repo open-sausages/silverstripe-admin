@@ -1,14 +1,35 @@
+import cx from 'classnames';
+
+/**
+ * An API for updating schema state
+ */
 export default class {
 
+  /**
+   * Constructor
+   * @param {object} schemaState
+   * @param {object} formState
+   */
   constructor(schemaState, formState) {
     this.schemaState = { ...schemaState };
     this.formState = formState;
   }
 
+  /**
+   * Gets a field given its name attribute
+   * @param {string} field
+   * @return {object}
+   */
   getFieldByName(field) {
     return this.schemaState.fields.find(f => f.name === field);
   }
 
+  /**
+   * Updates a field by callback
+   * @param {string} fieldName
+   * @param {function} updater
+   * @returns {this}
+   */
   mutateField(fieldName, updater) {
     const fieldList = this.schemaState.fields || [];
     const fieldIndex = fieldList.findIndex(f => f.name === fieldName);
@@ -23,6 +44,12 @@ export default class {
     return this;
   }
 
+  /**
+   * Merges properties into a field
+   * @param {string} fieldName
+   * @param {object} update
+   * @returns {this}
+   */
   updateField(fieldName, update) {
     return this.mutateField(fieldName, (field) => ({
       ...field,
@@ -30,6 +57,12 @@ export default class {
     }));
   }
 
+  /**
+   * Updates multiple fields given a map of fieldname
+   * to mutation
+   * @param {object} updates
+   * @returns {this}
+   */
   updateFields(updates) {
     Object.keys(updates).forEach(k => {
       this.updateField(k, updates[k]);
@@ -38,26 +71,61 @@ export default class {
     return this;
   }
 
-  setFieldComponent(fieldName, schemaComponent) {
-    return this.updateField(fieldName, { schemaComponent });
+  /**
+   * Sets a component for a field
+   * @param {string} fieldName
+   * @param {string} component The component as registered in Injector
+   * @returns {this}
+   */
+  setFieldComponent(fieldName, component) {
+    return this.updateField(fieldName, { component });
   }
 
-  setFieldMessage(fieldName, value, type, extraClass) {
-    return this.updateField(fieldName, {
-      meta: { error: value },
+  /**
+   * Toggles a CSS class on a field
+   * @param {string} fieldName
+   * @param {string} className
+   * @param {boolean} active
+   * @returns {this}
+   */
+  setFieldClass(fieldName, className, active = true) {
+    return this.mutateField(fieldName, (field) => {
+      const classConfig = {};
+      if (field.extraClass) {
+        classConfig[field.extraClass] = true;
+      }
+      classConfig[className] = active;
+      return {
+        ...field,
+        extraClass: cx(classConfig),
+      };
     });
   }
 
-  setCustomProp(fieldName, propName, propValue) {
-    return this.mutateField(fieldName, (field) => ({
-      ...field,
-      data: {
-        ...field.data,
-        [propName]: propValue,
-      },
-    }));
+  /**
+   * Adds a CSS class to a field
+   * @param {string} fieldName
+   * @param {string} className
+   * @returns {this}
+   */
+  addFieldClass(fieldName, className) {
+    return this.setFieldClass(fieldName, className, true);
   }
 
+  /**
+   * Removes a CSS class from a field
+   * @param {string} fieldName
+   * @param {string} className
+   * @returns {this}
+   */
+  removeFieldClass(fieldName, className) {
+    return this.setFieldClass(fieldName, className, false);
+  }
+
+  /**
+   * Gets the mutated schema state
+   * @returns {object}
+   */
   getState() {
     return this.schemaState;
   }

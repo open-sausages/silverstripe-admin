@@ -53,7 +53,7 @@ class FormBuilder extends SilverStripeComponent {
 
     const validator = new Validator(values);
 
-    let validation =  Object.entries(values).reduce((prev, curr) => {
+    const validation = Object.entries(values).reduce((prev, curr) => {
       const [key] = curr;
       const field = findField(this.props.schema.schema.fields, key);
 
@@ -200,7 +200,6 @@ class FormBuilder extends SilverStripeComponent {
     const FieldComponent = this.props.baseFieldComponent;
     return fields.map((field) => {
       let props = field;
-
       if (field.children) {
         props = Object.assign(
           {},
@@ -307,33 +306,10 @@ class FormBuilder extends SilverStripeComponent {
         true,
         schemaMerge(field, fieldState),
         // Overlap with redux-form prop handling : createFieldProps filters out the 'component' key
-        { schemaComponent: field.component }
+        { schemaComponent: fieldState.component || field.component }
       );
       if (field.children) {
         data.children = this.normalizeFields(field.children, state);
-      }
-
-      return data;
-    });
-  }
-
-  /**
-   * Ensure that keys don't conflict with redux-form expectations.
-   *
-   * @param {array} actions
-   * @return {array}
-   */
-  normalizeActions(actions) {
-    return actions.map((action) => {
-      const data = merge.recursive(
-        true,
-        action,
-        // Overlap with redux-form prop handling : createFieldProps filters out the 'component' key
-        { schemaComponent: action.component }
-      );
-
-      if (action.children) {
-        data.children = this.normalizeActions(action.children);
       }
 
       return data;
@@ -371,7 +347,7 @@ class FormBuilder extends SilverStripeComponent {
       form, // required as redux-form identifier
       afterMessages,
       fields: this.normalizeFields(schema.fields, state),
-      actions: this.normalizeActions(schema.actions),
+      actions: this.normalizeFields(schema.actions, state),
       attributes,
       data: schema.data,
       initialValues: schemaFieldValues(schema, state),
