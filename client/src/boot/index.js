@@ -11,7 +11,7 @@ import ConfigReducer from 'state/config/ConfigReducer';
 import SchemaReducer from 'state/schema/SchemaReducer';
 import RecordsReducer from 'state/records/RecordsReducer';
 import BreadcrumbsReducer from 'state/breadcrumbs/BreadcrumbsReducer';
-// import UnsavedFormsReducer from 'state/unsavedForms/UnsavedFormsReducer';
+import applyFormMiddleware from '../lib/dependency-injection/applyFormMiddleware';
 import registerComponents from 'boot/registerComponents';
 import TreeDropdownFieldReducer from 'state/treeDropdownField/TreeDropdownFieldReducer';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
@@ -63,9 +63,15 @@ function appBoot() {
     },
   }]);
 
+  const FormReducer = applyFormMiddleware(
+    combineReducers({
+      formState: ReduxFormReducer,
+      formSchemas: SchemaReducer,
+    })
+  );
+
   reducerRegister.add('config', ConfigReducer);
-  reducerRegister.add('form', ReduxFormReducer);
-  reducerRegister.add('schemas', SchemaReducer);
+  reducerRegister.add('form', FormReducer);
   reducerRegister.add('records', RecordsReducer);
   reducerRegister.add('breadcrumbs', BreadcrumbsReducer);
   reducerRegister.add('routing', routerReducer);
@@ -74,11 +80,6 @@ function appBoot() {
   // @todo - Restore this once we address https://github.com/silverstripe/silverstripe-admin/issues/90
   // reducerRegister.add('unsavedForms', UnsavedFormsReducer);
 
-  // Force this to the end of the execution queue to ensure it's last.
-  window.setTimeout(() => {
-    registerComponents();
-    Injector.load();
-  }, 0);
 
   const initialState = {};
   const rootReducer = combineReducers(reducerRegister.getAll());
@@ -123,8 +124,12 @@ function appBoot() {
 
   // Bootstrap routing
   const routes = new BootRoutes(store, apolloClient);
-  routes.start(window.location.pathname);
-
+  // Force this to the end of the execution queue to ensure it's last.
+  window.setTimeout(() => {
+    registerComponents();
+    Injector.load();
+    routes.start(window.location.pathname);
+  }, 0);
   // @TODO - Remove once we remove entwine
   // Enable top-level css selectors for react-dependant entwine sections
   if (window.jQuery) {

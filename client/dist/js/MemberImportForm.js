@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-webpackJsonp([5],{15:function(n,t,e){"use strict";var i=void 0!==window.jQuery?window.jQuery:null;n.exports=i},906:function(n,t,e){"use strict";var i=e(15);(function(n){return n&&n.__esModule?n:{default:n}})(i).default.entwine("ss",function(n){n(".import-form .advanced").entwine({onmatch:function(){this._super(),this.hide()},onunmatch:function(){this._super()}}),n(".import-form a.toggle-advanced").entwine({onclick:function(n){return this.parents("form:eq(0)").find(".advanced").toggle(),!1}})})}},[906]);
-=======
 webpackJsonp([5],{
 
 /***/ 16:
@@ -15,7 +12,7 @@ module.exports = jQuery;
 
 /***/ }),
 
-/***/ 918:
+/***/ 921:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49,6 +46,5 @@ _jQuery2.default.entwine('ss', function ($) {
 
 /***/ })
 
-},[918]);
+},[921]);
 //# sourceMappingURL=MemberImportForm.js.map
->>>>>>> Context API for dependency injection

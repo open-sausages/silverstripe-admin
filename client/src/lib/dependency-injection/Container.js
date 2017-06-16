@@ -119,7 +119,7 @@ const get = (key, context) => {
   }
   componentName += ']';
   service.displayName = componentName;
-  console.log('got service', key, 'with context', context, 'display name is ', componentName);
+
   return service;
 };
 

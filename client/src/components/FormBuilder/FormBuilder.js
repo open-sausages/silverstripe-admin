@@ -41,16 +41,34 @@ class FormBuilder extends SilverStripeComponent {
       return {};
     }
 
+    const validationMiddleware = this.context.injector.get(
+      'FormValidationMiddleware',
+      this.props.identifier
+    );
+
+    let middlewareValidationResult = {};
+    if (validationMiddleware) {
+      middlewareValidationResult = validationMiddleware(values, {}) || {};
+    }
+
     const validator = new Validator(values);
 
-    return Object.entries(values).reduce((prev, curr) => {
+    let validation =  Object.entries(values).reduce((prev, curr) => {
       const [key] = curr;
       const field = findField(this.props.schema.schema.fields, key);
 
-      const { valid, errors } = validator.validateFieldSchema(field);
-
+      let { valid, errors } = validator.validateFieldSchema(field);
+      let middlewareErrors = middlewareValidationResult[key];
+      valid = valid && !middlewareErrors;
       if (valid) {
         return prev;
+      }
+
+      if (middlewareErrors) {
+        if (!Array.isArray(middlewareErrors)) {
+          middlewareErrors = [middlewareErrors];
+        };
+        errors = [...errors, ...middlewareErrors];
       }
 
       // so if there are multiple errors, it will be listed in html spans
@@ -58,13 +76,16 @@ class FormBuilder extends SilverStripeComponent {
         <span key={index} className="form__validation-message">{message}</span>
       ));
 
-      return Object.assign({}, prev, {
+      return {
+        ...prev,
         [key]: {
           type: 'error',
-          value: { react: errorHtml },
+          value: { react: errorHtml }
         },
-      });
+      };
     }, {});
+
+    return validation;
   }
 
   /**
@@ -136,13 +157,9 @@ class FormBuilder extends SilverStripeComponent {
    */
   buildComponent(props) {
     let componentProps = props;
-    const schemaContext = this.props.schema.id
-      .split('/')
-      .map(part => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
-      .join('.');
     // 'component' key is renamed to 'schemaComponent' in normalize*() methods
     const SchemaComponent = componentProps.schemaComponent !== null
-      ? this.context.injector.get(componentProps.schemaComponent, schemaContext)
+      ? this.context.injector.get(componentProps.schemaComponent, this.props.identifier)
       : this.getComponentForDataType(componentProps.schemaType);
 
     if (SchemaComponent === null) {
@@ -213,7 +230,8 @@ class FormBuilder extends SilverStripeComponent {
    * @return object|null
    */
   getComponentForDataType(dataType) {
-    const { injector: { get } } = this.context;
+    const get = (type) => this.context.injector.get(type, this.props.identifier);
+
     switch (dataType) {
       case 'String':
       case 'Text':
@@ -280,14 +298,12 @@ class FormBuilder extends SilverStripeComponent {
       const fieldState = (state && state.fields)
         ? state.fields.find((item) => item.id === field.id)
         : {};
-
       const data = merge.recursive(
         true,
         schemaMerge(field, fieldState),
         // Overlap with redux-form prop handling : createFieldProps filters out the 'component' key
         { schemaComponent: field.component }
       );
-
       if (field.children) {
         data.children = this.normalizeFields(field.children, state);
       }
@@ -411,6 +427,17 @@ const basePropTypes = {
   responseRequestedSchema: PropTypes.arrayOf(PropTypes.oneOf([
     'schema', 'state', 'errors', 'auto',
   ])),
+  identifier(props, propName, componentName) {
+    if (!/^[A-Za-z0-9_\.]+$/.test(props[propName])) {
+      return new Error(`
+        Invalid identifier supplied to ${componentName}. Must be a set of
+        dot-separated alphanumeric strings.
+      `);
+    }
+
+    return null;
+  },
+
 };
 
 FormBuilder.propTypes = Object.assign({}, basePropTypes, {

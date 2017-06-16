@@ -1,11 +1,14 @@
 import React from 'react';
 import injectorContext from './injectorContext';
 
-const inject = (Component, dependencies, mapDependenciesToProps) => {
+const inject = (dependencies, mapDependenciesToProps, contextArg) => (Component) => {
   // eslint-disable-next-line react/prefer-stateless-function
   class Injected extends React.Component {
     render() {
       let props = {};
+      const context = typeof contextArg === 'function' ?
+        contextArg(this.props) :
+        contextArg;
       let deps = dependencies;
       if (deps) {
         if (!Array.isArray(deps)) {
@@ -17,7 +20,7 @@ const inject = (Component, dependencies, mapDependenciesToProps) => {
           }
           deps = [deps];
         }
-        const resolved = deps.map(this.context.injector.get);
+        const resolved = deps.map(dep => this.context.injector.get(dep, context));
         if (mapDependenciesToProps && typeof mapDependenciesToProps === 'function') {
           props = mapDependenciesToProps(...resolved);
           if (typeof props !== 'object') {

@@ -36,7 +36,6 @@ function fieldHolder(Field) {
       if (!message || (meta && !meta.touched)) {
         return null;
       }
-
       return (
         <FormAlert className="form__field-message" {...message} />
       );

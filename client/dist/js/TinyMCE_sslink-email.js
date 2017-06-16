@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-webpackJsonp([2],{123:function(e,t){e.exports=ReactApollo},178:function(e,t){e.exports=InsertLinkModal},23:function(e,t){e.exports=i18n},63:function(e,t){e.exports=Injector},908:function(e,t,n){"use strict";function i(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(t,"__esModule",{value:!0});var r=n(23),a=i(r),l=n(97),o=i(l),s=n(0),d=i(s),u=n(28),c=i(u),p=n(123),f=n(26),m=i(f),g=n(178),k=n(63);o.default.addAction("sslink",{text:a.default._t("Admin.LINKLABEL_EMAIL","Link to email address"),onclick:function(e){return e.execCommand("sslinkemail")}});var _={init:function(e){e.addCommand("sslinkemail",function(){window.jQuery("#"+e.id).entwine("ss").openLinkEmailDialog()})}},h="insert-link__dialog-wrapper--email",A=(0,k.provideInjector)((0,g.createInsertLinkModal)("SilverStripe\\Admin\\LeftAndMain","EditorEmailLink"));m.default.entwine("ss",function(e){e("textarea.htmleditor").entwine({openLinkEmailDialog:function(){var t=e("#"+h);t.length||(t=e('<div id="'+h+'" />'),e("body").append(t)),t.addClass("insert-link__dialog-wrapper"),t.setElement(this),t.open()}}),e("#"+h).entwine({renderModal:function(e){var t=this,n=ss.store,i=ss.apolloClient,r=function(){return t.close()},l=function(){return t.handleInsert.apply(t,arguments)},o=this.getOriginalAttributes();c.default.render(d.default.createElement(p.ApolloProvider,{store:n,client:i},d.default.createElement(A,{show:e,onInsert:l,onHide:r,title:a.default._t("Admin.LINK_EMAIL","Insert email link"),bodyClassName:"modal__dialog",className:"insert-link__dialog-wrapper--email",fileAttributes:o})),this[0])},getOriginalAttributes:function(){var t=this.getElement().getEditor(),n=e(t.getSelectedNode()),i=(n.attr("href")||"").split("?"),r=i[0].replace(/^mailto:/,"").split("?")[0];r.match(/.+@.+\..+/)||(r="");var a=i[1]?i[1].match(/subject=([^&]+)/):"";return{Link:r,Subject:a?a[1]:"",Description:n.attr("title")}},buildAttributes:function(e){var t=this._super(e),n="",i=t.href.replace(/^mailto:/,"").split("?")[0];return i.match(/.+@.+\..+/)||(i=""),i&&(n="mailto:"+i),n&&e.Subject&&(n=n+"?subject="+encodeURIComponent(e.Subject)),t.href=n,delete t.target,t}})}),tinymce.PluginManager.add("sslinkemail",function(e){return _.init(e)}),t.default=_},97:function(e,t){e.exports=TinyMCEActionRegistrar}},[908]);
-=======
 webpackJsonp([2],{
 
 /***/ 124:
@@ -17,7 +14,7 @@ module.exports = InsertLinkModal;
 
 /***/ }),
 
-/***/ 24:
+/***/ 23:
 /***/ (function(module, exports) {
 
 module.exports = i18n;
@@ -31,7 +28,7 @@ module.exports = Injector;
 
 /***/ }),
 
-/***/ 920:
+/***/ 923:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41,7 +38,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _i18n = __webpack_require__(24);
+var _i18n = __webpack_require__(23);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
@@ -197,6 +194,5 @@ module.exports = TinyMCEActionRegistrar;
 
 /***/ })
 
-},[920]);
+},[923]);
 //# sourceMappingURL=TinyMCE_sslink-email.js.map
->>>>>>> Context API for dependency injection

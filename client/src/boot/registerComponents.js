@@ -1,3 +1,4 @@
+import { Field } from 'redux-form';
 import Injector from 'lib/Injector';
 import TextField from 'components/TextField/TextField';
 import HiddenField from 'components/HiddenField/HiddenField';
@@ -21,6 +22,8 @@ import TabItem from 'components/Tabs/TabItem';
 import FormAction from 'components/FormAction/FormAction';
 import FieldGroup from 'components/FieldGroup/FieldGroup';
 import TreeDropdownField from 'components/TreeDropdownField/TreeDropdownField';
+import Form from 'components/Form/Form';
+import ReduxForm from 'containers/Form/Form';
 
 export default () => {
   Injector.register('TextField', TextField);
@@ -45,4 +48,10 @@ export default () => {
   Injector.register('FormAction', FormAction);
   Injector.register('LabelField', LabelField);
   Injector.register('TreeDropdownField', TreeDropdownField);
+  Injector.register('Form', Form);
+  Injector.register('FormStateMiddleware', (state) => state);
+  Injector.register('FormValidationMiddleware', (values, errors) => errors);
+  Injector.register('FormSchemaMiddleware', (state) => state);
+  Injector.register('ReduxForm', ReduxForm);
+  Injector.register('ReduxFormField', Field);
 };
