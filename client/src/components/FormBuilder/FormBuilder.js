@@ -156,11 +156,20 @@ class FormBuilder extends SilverStripeComponent {
    * @returns {*}
    */
   buildComponent(props) {
-    let componentProps = props;
+    // Inline `input` props into main field props
+    // (each component can pick and choose the props required for it's <input>
+    // See http://redux-form.com/6.0.5/docs/api/Field.md/#input-props
+    const componentProps = {
+      ...props,
+      ...props.input,
+    };
+    delete componentProps.input;
+    const { identifier } = this.props;
+    const { name } = componentProps;
     // 'component' key is renamed to 'schemaComponent' in normalize*() methods
     const SchemaComponent = componentProps.schemaComponent !== null
-      ? this.context.injector.get(componentProps.schemaComponent, this.props.identifier)
-      : this.getComponentForDataType(componentProps.schemaType);
+      ? this.context.injector.get(componentProps.schemaComponent, `${identifier}.${name}`)
+      : this.getComponentForDataType(componentProps.schemaType, name);
 
     if (SchemaComponent === null) {
       return null;
@@ -168,11 +177,6 @@ class FormBuilder extends SilverStripeComponent {
       throw Error(`Component not found in injector: ${componentProps.schemaComponent}`);
     }
 
-    // Inline `input` props into main field props
-    // (each component can pick and choose the props required for it's <input>
-    // See http://redux-form.com/6.0.5/docs/api/Field.md/#input-props
-    componentProps = Object.assign({}, componentProps, componentProps.input);
-    delete componentProps.input;
 
     // Provides container components a place to hook in
     // and apply customisations to scaffolded components.
@@ -229,8 +233,9 @@ class FormBuilder extends SilverStripeComponent {
    * @param string dataType - The data type provided by the form schema.
    * @return object|null
    */
-  getComponentForDataType(dataType) {
-    const get = (type) => this.context.injector.get(type, this.props.identifier);
+  getComponentForDataType(dataType, name) {
+    const { identifier } = this.props;
+    const get = (type) => this.context.injector.get(type, `${identifier}.${name}`);
 
     switch (dataType) {
       case 'String':

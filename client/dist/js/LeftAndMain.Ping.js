@@ -12,7 +12,7 @@ module.exports = jQuery;
 
 /***/ }),
 
-/***/ 920:
+/***/ 929:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59,5 +59,5 @@ _jQuery2.default.entwine('ss.ping', function ($) {
 
 /***/ })
 
-},[920]);
+},[929]);
 //# sourceMappingURL=LeftAndMain.Ping.js.map

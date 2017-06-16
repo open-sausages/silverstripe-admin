@@ -7,7 +7,7 @@ module.exports = ReactApollo;
 
 /***/ }),
 
-/***/ 180:
+/***/ 181:
 /***/ (function(module, exports) {
 
 module.exports = InsertLinkModal;
@@ -21,14 +21,14 @@ module.exports = i18n;
 
 /***/ }),
 
-/***/ 64:
+/***/ 52:
 /***/ (function(module, exports) {
 
 module.exports = Injector;
 
 /***/ }),
 
-/***/ 924:
+/***/ 933:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60,9 +60,9 @@ var _jquery = __webpack_require__(26);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _InsertLinkModal = __webpack_require__(180);
+var _InsertLinkModal = __webpack_require__(181);
 
-var _Injector = __webpack_require__(64);
+var _Injector = __webpack_require__(52);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -169,5 +169,5 @@ module.exports = TinyMCEActionRegistrar;
 
 /***/ })
 
-},[924]);
+},[933]);
 //# sourceMappingURL=TinyMCE_sslink-external.js.map
