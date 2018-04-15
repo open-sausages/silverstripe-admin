@@ -33,7 +33,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\PrintableTransformation;
 use SilverStripe\Forms\Schema\FormSchema;
 use SilverStripe\Internationalisation\Internationalisation;
-use SilverStripe\ORM\ArrayListInterface;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
@@ -1003,11 +1003,11 @@ class LeftAndMain extends Controller implements PermissionProvider
         if (!isset($this->_cache_MainMenu) || !$cached) {
             // Don't accidentally return a menu if you're not logged in - it's used to determine access.
             if (!Security::getCurrentUser()) {
-                return new ArrayListInterface();
+                return new ArrayList();
             }
 
             // Encode into DO set
-            $menu = new ArrayListInterface();
+            $menu = new ArrayList();
             $menuItems = CMSMenu::get_viewable_menu_items();
 
             // extra styling for custom menu-icons
@@ -1164,11 +1164,11 @@ class LeftAndMain extends Controller implements PermissionProvider
 
     /**
      * @param bool $unlinked
-     * @return ArrayListInterface
+     * @return ArrayList
      */
     public function Breadcrumbs($unlinked = false)
     {
-        $items = new ArrayListInterface(array(
+        $items = new ArrayList(array(
             new ArrayData(array(
                 'Title' => $this->menu_title(),
                 'Link' => ($unlinked) ? false : $this->Link()
@@ -1179,7 +1179,7 @@ class LeftAndMain extends Controller implements PermissionProvider
             if ($record->hasExtension(Hierarchy::class)) {
                 /** @var DataObject|Hierarchy $record */
                 $ancestors = $record->getAncestors();
-                $ancestors = new ArrayListInterface(array_reverse($ancestors->toArray()));
+                $ancestors = new ArrayList(array_reverse($ancestors->toArray()));
                 $ancestors->push($record);
                 foreach ($ancestors as $ancestor) {
                     $items->push(new ArrayData(array(

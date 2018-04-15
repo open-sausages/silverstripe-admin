@@ -24,7 +24,7 @@ use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\ArrayLib;
-use SilverStripe\ORM\ArrayListInterface;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Search\SearchContext;
 use SilverStripe\ORM\ValidationResult;
@@ -353,12 +353,12 @@ abstract class ModelAdmin extends LeftAndMain
 
 
     /**
-     * @return \SilverStripe\ORM\ArrayListInterface An ArrayList of all managed models to build the tabs for this ModelAdmin
+     * @return \SilverStripe\ORM\ArrayList An ArrayList of all managed models to build the tabs for this ModelAdmin
      */
     protected function getManagedModelTabs()
     {
         $models = $this->getManagedModels();
-        $forms = new ArrayListInterface();
+        $forms = new ArrayList();
 
         foreach ($models as $class => $options) {
             $forms->push(new ArrayData(array(
@@ -486,11 +486,11 @@ abstract class ModelAdmin extends LeftAndMain
         /** @var BulkLoader $importer */
         $importer = new $importerClass($this->modelClass);
         $spec = $importer->getImportSpec();
-        $specFields = new ArrayListInterface();
+        $specFields = new ArrayList();
         foreach ($spec['fields'] as $name => $desc) {
             $specFields->push(new ArrayData(array('Name' => $name, 'Description' => $desc)));
         }
-        $specRelations = new ArrayListInterface();
+        $specRelations = new ArrayList();
         foreach ($spec['relations'] as $name => $desc) {
             $specRelations->push(new ArrayData(array('Name' => $name, 'Description' => $desc)));
         }
@@ -608,7 +608,7 @@ abstract class ModelAdmin extends LeftAndMain
 
     /**
      * @param bool $unlinked
-     * @return ArrayListInterface
+     * @return ArrayList
      */
     public function Breadcrumbs($unlinked = false)
     {

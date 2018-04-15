@@ -8,7 +8,7 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\ORM\ArrayListInterface;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\ListInterface;
 use SilverStripe\Versioned\Versioned;
@@ -236,12 +236,12 @@ class CMSBatchActionHandler extends RequestHandler
      *  - Link
      *  - Title
      *
-     * @return ArrayListInterface
+     * @return ArrayList
      */
     public function batchActionList()
     {
         $actions = $this->batchActions();
-        $actionList = new ArrayListInterface();
+        $actionList = new ArrayList();
 
         foreach ($actions as $urlSegment => $action) {
             $actionObj = $this->buildAction($action['class']);
@@ -313,7 +313,7 @@ class CMSBatchActionHandler extends RequestHandler
     {
         // Check empty set
         if (empty($ids)) {
-            return new ArrayListInterface();
+            return new ArrayList();
         }
 
         $recordClass = $this->recordClass;

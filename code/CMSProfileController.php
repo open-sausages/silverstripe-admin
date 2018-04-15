@@ -5,7 +5,7 @@ namespace SilverStripe\Admin;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\ORM\ArrayListInterface;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
@@ -106,11 +106,11 @@ class CMSProfileController extends LeftAndMain
      * in the breadcrumbs.
      *
      * @param bool $unlinked
-     * @return ArrayListInterface
+     * @return ArrayList
      */
     public function Breadcrumbs($unlinked = false)
     {
         $items = parent::Breadcrumbs($unlinked);
-        return new ArrayListInterface(array($items[0]));
+        return new ArrayList(array($items[0]));
     }
 }
