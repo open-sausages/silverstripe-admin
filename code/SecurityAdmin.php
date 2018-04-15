@@ -8,7 +8,7 @@ use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\Forms\GridField\GridFieldConfigRecordEditor;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldExportButton;
@@ -93,9 +93,9 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider
     public function getEditForm($id = null, $fields = null)
     {
         // Build gridfield configs
-        $memberListConfig = GridFieldConfig_RecordEditor::create()
+        $memberListConfig = GridFieldConfigRecordEditor::create()
             ->addComponent(new GridFieldExportButton('buttons-before-left'));
-        $groupListConfig = GridFieldConfig_RecordEditor::create()
+        $groupListConfig = GridFieldConfigRecordEditor::create()
             ->addComponent(new GridFieldExportButton('buttons-before-left'));
 
         /** @var GridFieldDetailForm $detailForm */
@@ -188,7 +188,7 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider
                 'Roles',
                 false,
                 PermissionRole::get(),
-                GridFieldConfig_RecordEditor::create()
+                GridFieldConfigRecordEditor::create()
             );
 
             $rolesTab = $fields->findOrMakeTab('Root.Roles', _t(__CLASS__ . '.TABROLES', 'Roles'));

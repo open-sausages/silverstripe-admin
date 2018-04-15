@@ -12,7 +12,7 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Control\HTTPResponse_Exception;
+use SilverStripe\Control\HTTPResponseException;
 use SilverStripe\Control\PjaxResponseNegotiator;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
@@ -32,14 +32,14 @@ use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\PrintableTransformation;
 use SilverStripe\Forms\Schema\FormSchema;
-use SilverStripe\i18n\i18n;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Internationalisation\Internationalisation;
+use SilverStripe\ORM\ArrayListInterface;
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Hierarchy\Hierarchy;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\ListInterface;
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Member;
@@ -51,7 +51,7 @@ use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
-use SilverStripe\View\SSViewer;
+use SilverStripe\View\Templates\Viewer;
 
 /**
  * LeftAndMain is the parent class of all the two-pane views in the CMS.
@@ -182,7 +182,7 @@ class LeftAndMain extends Controller implements PermissionProvider
      */
     private static $admin_themes = [
         'silverstripe/admin:cms-forms',
-        SSViewer::DEFAULT_THEME,
+        Viewer::DEFAULT_THEME,
     ];
 
     /**
@@ -401,7 +401,7 @@ class LeftAndMain extends Controller implements PermissionProvider
      * @param int $errorCode
      * @param string $errorMessage
      * @return HTTPResponse
-     * @throws HTTPResponse_Exception
+     * @throws HTTPResponseException
      */
     public function jsonError($errorCode, $errorMessage = null)
     {
@@ -430,7 +430,7 @@ class LeftAndMain extends Controller implements PermissionProvider
         $this->extend('onBeforeJSONError', $errorCode, $request, $response);
 
         // Throw a new exception
-        throw new HTTPResponse_Exception($response);
+        throw new HTTPResponseException($response);
     }
 
     /**
@@ -583,13 +583,13 @@ class LeftAndMain extends Controller implements PermissionProvider
     {
         parent::init();
 
-        SSViewer::setRewriteHashLinksDefault(false);
+        Viewer::setRewriteHashLinksDefault(false);
         ContentNegotiator::setEnabled(false);
 
         // set language
         $member = Security::getCurrentUser();
         if (!empty($member->Locale)) {
-            i18n::set_locale($member->Locale);
+            Internationalisation::set_locale($member->Locale);
         }
 
         if ($helpLink = LeftAndMain::config()->uninherited('help_link')) {
@@ -736,11 +736,11 @@ class LeftAndMain extends Controller implements PermissionProvider
         // them with admin themes
         $themes = HTMLEditorConfig::getThemes();
         if (empty($themes)) {
-            HTMLEditorConfig::setThemes(SSViewer::get_themes());
+            HTMLEditorConfig::setThemes(Viewer::get_themes());
         }
 
         // Assign default cms theme and replace user-specified themes
-        SSViewer::set_themes(LeftAndMain::config()->uninherited('admin_themes'));
+        Viewer::set_themes(LeftAndMain::config()->uninherited('admin_themes'));
 
         // Set the current reading mode
         Versioned::set_stage(Versioned::DRAFT);
@@ -757,7 +757,7 @@ class LeftAndMain extends Controller implements PermissionProvider
             // Nicer presentation of model-level validation errors
             $msgs = _t(__CLASS__ . '.ValidationError', 'Validation error') . ': '
                 . $e->getMessage();
-            $e = new HTTPResponse_Exception($msgs, 403);
+            $e = new HTTPResponseException($msgs, 403);
             $errorResponse = $e->getResponse();
             $errorResponse->addHeader('Content-Type', 'text/plain');
             $errorResponse->addHeader('X-Status', rawurlencode($msgs));
@@ -907,7 +907,7 @@ class LeftAndMain extends Controller implements PermissionProvider
         if (!$localise) {
             return $title;
         }
-        return i18n::_t("{$class}.MENUTITLE", $title);
+        return Internationalisation::_t("{$class}.MENUTITLE", $title);
     }
 
     /**
@@ -944,7 +944,7 @@ class LeftAndMain extends Controller implements PermissionProvider
     /**
      * @param HTTPRequest $request
      * @return HTTPResponse
-     * @throws HTTPResponse_Exception
+     * @throws HTTPResponseException
      */
     public function show($request)
     {
@@ -996,18 +996,18 @@ class LeftAndMain extends Controller implements PermissionProvider
      * to work out which sections the user has access to.
      *
      * @param bool $cached
-     * @return SS_List
+     * @return ListInterface
      */
     public function MainMenu($cached = true)
     {
         if (!isset($this->_cache_MainMenu) || !$cached) {
             // Don't accidentally return a menu if you're not logged in - it's used to determine access.
             if (!Security::getCurrentUser()) {
-                return new ArrayList();
+                return new ArrayListInterface();
             }
 
             // Encode into DO set
-            $menu = new ArrayList();
+            $menu = new ArrayListInterface();
             $menuItems = CMSMenu::get_viewable_menu_items();
 
             // extra styling for custom menu-icons
@@ -1114,8 +1114,8 @@ class LeftAndMain extends Controller implements PermissionProvider
      */
     public function getTemplatesWithSuffix($suffix)
     {
-        $templates = SSViewer::get_templates_by_class(get_class($this), $suffix, __CLASS__);
-        return SSViewer::chooseTemplate($templates);
+        $templates = Viewer::get_templates_by_class(get_class($this), $suffix, __CLASS__);
+        return Viewer::chooseTemplate($templates);
     }
 
     public function Content()
@@ -1164,11 +1164,11 @@ class LeftAndMain extends Controller implements PermissionProvider
 
     /**
      * @param bool $unlinked
-     * @return ArrayList
+     * @return ArrayListInterface
      */
     public function Breadcrumbs($unlinked = false)
     {
-        $items = new ArrayList(array(
+        $items = new ArrayListInterface(array(
             new ArrayData(array(
                 'Title' => $this->menu_title(),
                 'Link' => ($unlinked) ? false : $this->Link()
@@ -1179,7 +1179,7 @@ class LeftAndMain extends Controller implements PermissionProvider
             if ($record->hasExtension(Hierarchy::class)) {
                 /** @var DataObject|Hierarchy $record */
                 $ancestors = $record->getAncestors();
-                $ancestors = new ArrayList(array_reverse($ancestors->toArray()));
+                $ancestors = new ArrayListInterface(array_reverse($ancestors->toArray()));
                 $ancestors->push($record);
                 foreach ($ancestors as $ancestor) {
                     $items->push(new ArrayData(array(
@@ -1522,7 +1522,7 @@ class LeftAndMain extends Controller implements PermissionProvider
     {
         $templates = $this->getTemplatesWithSuffix('_Tools');
         if ($templates) {
-            $viewer = SSViewer::create($templates);
+            $viewer = Viewer::create($templates);
             return $viewer->process($this);
         } else {
             return false;
@@ -1544,7 +1544,7 @@ class LeftAndMain extends Controller implements PermissionProvider
     {
         $templates = $this->getTemplatesWithSuffix('_EditFormTools');
         if ($templates) {
-            $viewer = SSViewer::create($templates);
+            $viewer = Viewer::create($templates);
             return $viewer->process($this);
         } else {
             return false;
@@ -1849,7 +1849,7 @@ class LeftAndMain extends Controller implements PermissionProvider
      */
     public function Locale()
     {
-        return DBField::create_field('Locale', i18n::get_locale());
+        return DBField::create_field('Locale', Internationalisation::get_locale());
     }
 
     public function providePermissions()

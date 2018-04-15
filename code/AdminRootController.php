@@ -7,7 +7,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\View\TemplateGlobalProvider;
+use SilverStripe\View\Templates\TemplateGlobalProvider;
 
 class AdminRootController extends Controller implements TemplateGlobalProvider
 {

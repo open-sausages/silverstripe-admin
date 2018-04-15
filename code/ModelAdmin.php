@@ -14,7 +14,7 @@ use SilverStripe\Forms\FileField;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\Forms\GridField\GridFieldConfigRecordEditor;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\Forms\GridField\GridFieldFilterHeader;
@@ -24,7 +24,7 @@ use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\ArrayLib;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\ArrayListInterface;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Search\SearchContext;
 use SilverStripe\ORM\ValidationResult;
@@ -188,7 +188,7 @@ abstract class ModelAdmin extends LeftAndMain
             $this->sanitiseClassName($this->modelClass),
             false,
             $list,
-            $fieldConfig = GridFieldConfig_RecordEditor::create($this->config()->get('page_length'))
+            $fieldConfig = GridFieldConfigRecordEditor::create($this->config()->get('page_length'))
                 ->addComponent($exportButton)
                 ->removeComponentsByType(GridFieldFilterHeader::class)
                 ->addComponents(new GridFieldPrintButton('buttons-before-left'))
@@ -353,12 +353,12 @@ abstract class ModelAdmin extends LeftAndMain
 
 
     /**
-     * @return \SilverStripe\ORM\ArrayList An ArrayList of all managed models to build the tabs for this ModelAdmin
+     * @return \SilverStripe\ORM\ArrayListInterface An ArrayList of all managed models to build the tabs for this ModelAdmin
      */
     protected function getManagedModelTabs()
     {
         $models = $this->getManagedModels();
-        $forms = new ArrayList();
+        $forms = new ArrayListInterface();
 
         foreach ($models as $class => $options) {
             $forms->push(new ArrayData(array(
@@ -486,11 +486,11 @@ abstract class ModelAdmin extends LeftAndMain
         /** @var BulkLoader $importer */
         $importer = new $importerClass($this->modelClass);
         $spec = $importer->getImportSpec();
-        $specFields = new ArrayList();
+        $specFields = new ArrayListInterface();
         foreach ($spec['fields'] as $name => $desc) {
             $specFields->push(new ArrayData(array('Name' => $name, 'Description' => $desc)));
         }
-        $specRelations = new ArrayList();
+        $specRelations = new ArrayListInterface();
         foreach ($spec['relations'] as $name => $desc) {
             $specRelations->push(new ArrayData(array('Name' => $name, 'Description' => $desc)));
         }
@@ -608,7 +608,7 @@ abstract class ModelAdmin extends LeftAndMain
 
     /**
      * @param bool $unlinked
-     * @return ArrayList
+     * @return ArrayListInterface
      */
     public function Breadcrumbs($unlinked = false)
     {

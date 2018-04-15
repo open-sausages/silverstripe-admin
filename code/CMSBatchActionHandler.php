@@ -8,9 +8,9 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\ArrayListInterface;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\ListInterface;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\SecurityToken;
@@ -236,12 +236,12 @@ class CMSBatchActionHandler extends RequestHandler
      *  - Link
      *  - Title
      *
-     * @return ArrayList
+     * @return ArrayListInterface
      */
     public function batchActionList()
     {
         $actions = $this->batchActions();
-        $actionList = new ArrayList();
+        $actionList = new ArrayListInterface();
 
         foreach ($actions as $urlSegment => $action) {
             $actionObj = $this->buildAction($action['class']);
@@ -307,13 +307,13 @@ class CMSBatchActionHandler extends RequestHandler
      * Safely query and return all pages queried
      *
      * @param array $ids
-     * @return SS_List
+     * @return ListInterface
      */
     protected function getPages($ids)
     {
         // Check empty set
         if (empty($ids)) {
-            return new ArrayList();
+            return new ArrayListInterface();
         }
 
         $recordClass = $this->recordClass;

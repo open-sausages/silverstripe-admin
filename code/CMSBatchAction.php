@@ -6,7 +6,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\ListInterface;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 
@@ -35,10 +35,10 @@ abstract class CMSBatchAction
      * Run this action for the given set of pages.
      * Return a set of status-updated JavaScript to return to the CMS.
      *
-     * @param SS_List $objs
+     * @param ListInterface $objs
      * @return string
      */
-    abstract public function run(SS_List $objs);
+    abstract public function run(ListInterface $objs);
 
     /**
      * Helper method for responding to a back action request
@@ -83,7 +83,7 @@ abstract class CMSBatchAction
      * Helper method for processing batch actions.
      * Returns a set of status-updating JavaScript to return to the CMS.
      *
-     * @param SS_List $objs The SS_List of objects to perform this batch action
+     * @param ListInterface $objs The SS_List of objects to perform this batch action
      * on.
      * @param string $helperMethod The method to call on each of those objects.
      * @param string $successMessage
@@ -99,7 +99,7 @@ abstract class CMSBatchAction
      *     }
      *  }
      */
-    public function batchaction(SS_List $objs, $helperMethod, $successMessage, $arguments = array())
+    public function batchaction(ListInterface $objs, $helperMethod, $successMessage, $arguments = array())
     {
         $status = array('modified' => array(), 'error' => array(), 'deleted' => array(), 'success' => array());
 

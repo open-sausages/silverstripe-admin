@@ -9,7 +9,7 @@ use SilverStripe\Core\Convert;
 use SilverStripe\Core\Manifest\ClassLoader;
 use SilverStripe\Control\Controller;
 use SilverStripe\Dev\TestOnly;
-use SilverStripe\i18n\i18nEntityProvider;
+use SilverStripe\Internationalisation\EntityProvider;
 use SilverStripe\Security\Member;
 use IteratorAggregate;
 use ReflectionClass;
@@ -29,7 +29,7 @@ use SilverStripe\Security\Security;
  * Additional CMSMenu items can be added through {@link LeftAndMainExtension::init()}
  * extensions added to {@link LeftAndMain}.
  */
-class CMSMenu implements IteratorAggregate, i18nEntityProvider
+class CMSMenu implements IteratorAggregate, EntityProvider
 {
 
     /**
