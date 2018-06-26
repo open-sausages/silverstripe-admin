@@ -27,7 +27,6 @@ const buildComponentContainer = (base = buildBaseContainer()) => ({
    */
   get(key, context, ...args) {
     const service = base.get.call(this, key, context, ...args);
-
     if (service.displayName && service.displayName.match(/\]$/)) {
       return service;
     }

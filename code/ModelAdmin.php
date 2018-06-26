@@ -152,6 +152,7 @@ abstract class ModelAdmin extends LeftAndMain
 
         // security check for valid models
         if (!array_key_exists($this->modelClass, $models)) {
+            var_dump($models);
             user_error('ModelAdmin::init(): Invalid Model class', E_USER_ERROR);
         }
     }

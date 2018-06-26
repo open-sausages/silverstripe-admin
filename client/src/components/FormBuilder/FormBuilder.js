@@ -121,7 +121,6 @@ class FormBuilder extends Component {
     const SchemaComponent = componentProps.schemaComponent !== null
       ? this.context.injector.get(componentProps.schemaComponent, `${identifier}.${name}`)
       : this.getComponentForDataType(componentProps.schemaType, name);
-
     if (SchemaComponent === null) {
       return null;
     } else if (componentProps.schemaComponent !== null && SchemaComponent === undefined) {

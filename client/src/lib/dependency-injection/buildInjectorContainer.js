@@ -64,9 +64,11 @@ const buildInjectorContainer = () => ({
       .forEach(service => service.load());
 
     this.initialised = true;
-    this.callbacks.forEach((callback) => {
-      callback();
-    });
+    this.callbacks
+      .sort((a, b) => a.priority - b.priority)
+      .forEach((callbackObj) => {
+        callbackObj.callback();
+      });
     this.callbacks = [];
   },
 
@@ -93,7 +95,7 @@ const buildInjectorContainer = () => ({
     callback(updater);
   },
 
-  ready(callback) {
+  ready(callback, priority = 100) {
     if (typeof callback !== 'function') {
       throw new Error('Callback provided is not a function');
     }
@@ -104,7 +106,7 @@ const buildInjectorContainer = () => ({
 
     this.callbacks = [
       ...this.callbacks,
-      callback,
+      { callback, priority },
     ];
   },
 });

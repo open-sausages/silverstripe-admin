@@ -195,8 +195,8 @@ class MiddlewareRegistry {
       const requestedContext = context.split('.');
       this._contextCache[context] = this._middlewares.filter(middleware => (
         middleware.context[0] === GLOBAL_CONTEXT ||
-        middleware.context.every((part, index) => (
-          part === WILDCARD || requestedContext[index] === part
+        middleware.context.every(part => (
+          part === WILDCARD || requestedContext.includes(part)
         ))
       ));
     }
