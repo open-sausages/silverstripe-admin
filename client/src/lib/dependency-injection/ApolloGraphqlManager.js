@@ -133,8 +133,10 @@ class ApolloGraphqlManager {
    * @param param
    * @returns {ApolloGraphqlManager}
    */
-  addParam(param) {
-    return this.addParams([param]);
+  addParam(name, value) {
+    return this.addParams({
+      [name]: value,
+    });
   }
 
   /**
@@ -142,13 +144,12 @@ class ApolloGraphqlManager {
    * @param params
    * @returns {ApolloGraphqlManager}
    */
-  addParams(params = []) {
+  addParams(params = {}) {
     const existing = this.config.params;
-    this.config.params = [
+    this.config.params = {
       ...existing,
       ...params,
-    ];
-
+    };
     return this;
   }
 

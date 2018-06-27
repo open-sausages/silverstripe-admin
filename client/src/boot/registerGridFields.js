@@ -16,18 +16,18 @@ const registerGridFields = () => {
       templateName: graphqlTemplates.READ,
       pluralName: `GridField${name}`,
       pagination: true,
-      params: {
-        sortBy: `[ReadGridField${name}SortInputType]`
-      },
+      params: {},
       fields,
     };
 
     const queryName = `${name}Query`;
     Injector.query.register(queryName, query);
     Injector.transform(
-      `gridfield-${name}-graphql`,
+      `gridfield-graphql-${name}`,
       (updater) => {
-        updater.component(`ReactGridField.${name}`, injectGraphql(queryName));
+        const context = `ReactGridField.${name}`;
+        const componentNames = components.map(c => c.component).join('.');
+        updater.component(context, injectGraphql(queryName, `${context}.${componentNames}`));
       }
     );
     Injector.transform(
