@@ -33,6 +33,8 @@ import Preview from 'components/Preview/Preview';
 import ReduxForm from 'containers/Form/Form';
 import UsedOnTable from 'components/UsedOnTable/UsedOnTable';
 import Loading from 'components/Loading/Loading';
+import Search from 'components/Search/Search';
+import SearchToggle from 'components/Search/SearchToggle';
 
 export default () => {
   Injector.component.registerMany({
@@ -70,5 +72,7 @@ export default () => {
     NotFoundComponent,
     UsedOnTable,
     Loading,
+    Search,
+    SearchToggle
   });
 };
