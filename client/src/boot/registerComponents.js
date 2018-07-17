@@ -73,6 +73,6 @@ export default () => {
     UsedOnTable,
     Loading,
     Search,
-    SearchToggle
+    SearchToggle,
   });
 };
