@@ -1,16 +1,8 @@
 ---
 Name: admin-graphql
 ---
-SilverStripe\GraphQL\Controller:
-  schema:
-    scaffolding_providers:
-      - SilverStripe\Admin\GraphQL\UniversalScaffolder
-      - SilverStripe\Admin\GraphQL\GridFieldScaffolder
-
-
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\Admin\GraphQL\GridFieldScaffolder:
-    constructor:
-      registry: %$SilverStripe\Admin\GridFieldRegistry
-  SilverStripe\Admin\GridFieldRegistry:
-    factory: SilverStripe\Admin\GridFieldRegistryFactory
+SilverStripe\GraphQL\Manager:
+  schemas:
+    admin:
+      scaffolding_providers:
+        - SilverStripe\Admin\GraphQL\UniversalScaffolder

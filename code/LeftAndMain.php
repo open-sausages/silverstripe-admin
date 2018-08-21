@@ -302,16 +302,6 @@ class LeftAndMain extends Controller implements PermissionProvider
         // Set env
         $combinedClientConfig['environment'] = Director::get_environment_type();
         $combinedClientConfig['debugging'] = LeftAndMain::config()->uninherited('client_debugging');
-        $combinedClientConfig['gridFieldQueries'] = [];
-        $registry = Injector::inst()->get(GridFieldRegistry::class);
-        /* @var GridFieldRegistration $gridFieldRegistration */
-        foreach($registry->getAll() as $gridFieldRegistration) {
-            $combinedClientConfig['gridFieldQueries'][] = [
-                'name' => $gridFieldRegistration->getIdentifier(),
-                'fields' => $gridFieldRegistration->getRequiredFields(),
-                'components' => $gridFieldRegistration->getGridField()->getReactComponents(),
-            ];
-        }
 
         return Convert::raw2json($combinedClientConfig);
     }

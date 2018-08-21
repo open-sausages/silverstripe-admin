@@ -8,7 +8,6 @@ import buildApolloClient from 'boot/apollo/buildClient';
 import { setConfig } from 'state/config/ConfigActions';
 import registerComponents from 'boot/registerComponents';
 import registerReducers from 'boot/registerReducers';
-import registerGridFields from 'boot/registerGridFields';
 import applyDevtools from 'boot/applyDevtools';
 import applyTransforms from 'boot/applyTransforms';
 
@@ -39,7 +38,6 @@ async function appBoot() {
 
   // Apply any injector transformations
   applyTransforms();
-  registerGridFields();
   Injector.ready(() => {
     // need to build initial state of reducers for booting earlier
     const rootReducer = combineReducers(Injector.reducer.getAll());

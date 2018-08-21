@@ -76,15 +76,12 @@ export default () => {
     NotFoundComponent,
     UsedOnTable,
     Loading,
-<<<<<<< HEAD
     ViewModeToggle,
     Search,
     SearchToggle,
-=======
     ReactGridField,
     GridFieldBeforeComponents: GridFieldComponentSlot,
     GridFieldAfterComponents: GridFieldComponentSlot,
     GridFieldHeaderComponents: GridFieldHeaderComponentSlot,
->>>>>>> Decoupling
   });
 };
