@@ -36,7 +36,7 @@ var _createBrowserHistory = __webpack_require__("./node_modules/history/lib/crea
 
 var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
 
-var _Config = __webpack_require__(18);
+var _Config = __webpack_require__(23);
 
 var _Config2 = _interopRequireDefault(_Config);
 
@@ -52,9 +52,9 @@ var _App = __webpack_require__("./client/src/containers/App/App.js");
 
 var _App2 = _interopRequireDefault(_App);
 
-var _reactRouterRedux = __webpack_require__(28);
+var _reactRouterRedux = __webpack_require__(29);
 
-var _reactApollo = __webpack_require__(23);
+var _reactApollo = __webpack_require__(19);
 
 var _i18n = __webpack_require__(2);
 
@@ -311,7 +311,7 @@ var _buildCache = __webpack_require__("./client/src/boot/apollo/buildCache.js");
 
 var _buildCache2 = _interopRequireDefault(_buildCache);
 
-var _Config = __webpack_require__(18);
+var _Config = __webpack_require__(23);
 
 var _Config2 = _interopRequireDefault(_Config);
 
@@ -794,7 +794,7 @@ var _reduxThunk = __webpack_require__(45);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _Config = __webpack_require__(18);
+var _Config = __webpack_require__(23);
 
 var _Config2 = _interopRequireDefault(_Config);
 
@@ -850,7 +850,7 @@ var _ActionMenu = __webpack_require__("./client/src/components/ActionMenu/Action
 
 var _ActionMenu2 = _interopRequireDefault(_ActionMenu);
 
-var _Badge = __webpack_require__(31);
+var _Badge = __webpack_require__(32);
 
 var _Badge2 = _interopRequireDefault(_Badge);
 
@@ -946,7 +946,7 @@ var _TabItem = __webpack_require__("./client/src/components/Tabs/TabItem.js");
 
 var _TabItem2 = _interopRequireDefault(_TabItem);
 
-var _FormAction = __webpack_require__(33);
+var _FormAction = __webpack_require__(34);
 
 var _FormAction2 = _interopRequireDefault(_FormAction);
 
@@ -954,7 +954,7 @@ var _FieldGroup = __webpack_require__("./client/src/components/FieldGroup/FieldG
 
 var _FieldGroup2 = _interopRequireDefault(_FieldGroup);
 
-var _TreeDropdownField = __webpack_require__(29);
+var _TreeDropdownField = __webpack_require__(30);
 
 var _TreeDropdownField2 = _interopRequireDefault(_TreeDropdownField);
 
@@ -970,7 +970,7 @@ var _Form = __webpack_require__("./client/src/components/Form/Form.js");
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _FormAlert = __webpack_require__(19);
+var _FormAlert = __webpack_require__(18);
 
 var _FormAlert2 = _interopRequireDefault(_FormAlert);
 
@@ -1072,7 +1072,7 @@ var _redux = __webpack_require__(7);
 
 var _reduxForm = __webpack_require__(11);
 
-var _reactRouterRedux = __webpack_require__(28);
+var _reactRouterRedux = __webpack_require__(29);
 
 var _ConfigReducer = __webpack_require__("./client/src/state/config/ConfigReducer.js");
 
@@ -2119,7 +2119,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormAlert = __webpack_require__(19);
+var _FormAlert = __webpack_require__(18);
 
 var _FormAlert2 = _interopRequireDefault(_FormAlert);
 
@@ -2680,9 +2680,9 @@ var _FieldHolder = __webpack_require__(9);
 
 var _FieldHolder2 = _interopRequireDefault(_FieldHolder);
 
-var _reactApollo = __webpack_require__(23);
+var _reactApollo = __webpack_require__(19);
 
-var _graphqlTag = __webpack_require__(35);
+var _graphqlTag = __webpack_require__(28);
 
 var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
 
@@ -2711,17 +2711,29 @@ var ReactGridField = function (_React$Component) {
       var _props$data = this.props.data,
           graphqlQuery = _props$data.graphqlQuery,
           queryName = _props$data.queryName,
-          components = _props$data.components;
+          components = _props$data.components,
+          graphqlVariables = _props$data.graphqlVariables;
 
 
       return _react2.default.createElement(
         _reactApollo.Query,
-        { query: (0, _graphqlTag2.default)(graphqlQuery) },
+        { query: (0, _graphqlTag2.default)(graphqlQuery), variables: graphqlVariables },
         function (graphql) {
           var loading = graphql.loading,
               data = graphql.data;
 
           var queryResult = data[queryName];
+          var renderComponent = function renderComponent(_ref) {
+            var component = _ref.component;
+
+            var Component = _this2.context.injector.get(component);
+            return _react2.default.createElement(Component, {
+              key: component,
+              graphql: graphql,
+              variables: graphqlVariables,
+              queryResult: queryResult
+            });
+          };
 
           return _react2.default.createElement(
             'div',
@@ -2731,12 +2743,7 @@ var ReactGridField = function (_React$Component) {
               { className: 'gridfield-before-components' },
               components.filter(function (c) {
                 return c.position === 'before';
-              }).map(function (_ref) {
-                var component = _ref.component;
-
-                var Component = _this2.context.injector.get(component);
-                return _react2.default.createElement(Component, { key: component, graphql: graphql, queryResult: queryResult });
-              })
+              }).map(renderComponent)
             ),
             loading && _react2.default.createElement(
               'h3',
@@ -2751,18 +2758,13 @@ var ReactGridField = function (_React$Component) {
                 null,
                 components.filter(function (c) {
                   return c.position === 'header';
-                }).map(function (_ref2) {
-                  var component = _ref2.component;
-
-                  var Component = _this2.context.injector.get(component);
-                  return _react2.default.createElement(Component, { key: component, graphql: graphql, queryResult: queryResult });
-                })
+                }).map(renderComponent)
               ),
               _react2.default.createElement(
                 'tbody',
                 null,
-                !loading && queryResult && queryResult.edges.map(function (_ref3) {
-                  var node = _ref3.node;
+                !loading && queryResult && queryResult.edges.map(function (_ref2) {
+                  var node = _ref2.node;
                   return _react2.default.createElement(
                     'tr',
                     { key: Object.values(node).join('') },
@@ -2782,12 +2784,7 @@ var ReactGridField = function (_React$Component) {
               { className: 'gridfield-after-components' },
               components.filter(function (c) {
                 return c.position === 'after';
-              }).map(function (_ref4) {
-                var component = _ref4.component;
-
-                var Component = _this2.context.injector.get(component);
-                return _react2.default.createElement(Component, { key: component, graphql: graphql, queryResult: queryResult });
-              })
+              }).map(renderComponent)
             )
           );
         }
@@ -3812,7 +3809,7 @@ var _classnames = __webpack_require__(3);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _FormAlert = __webpack_require__(19);
+var _FormAlert = __webpack_require__(18);
 
 var _FormAlert2 = _interopRequireDefault(_FormAlert);
 
@@ -11345,7 +11342,7 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _schemaFieldValues = __webpack_require__(13);
 
-var _TreeDropdownField = __webpack_require__(29);
+var _TreeDropdownField = __webpack_require__(30);
 
 var _Injector = __webpack_require__(6);
 
@@ -12285,9 +12282,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactApollo = __webpack_require__(23);
+var _reactApollo = __webpack_require__(19);
 
-var _graphqlTag = __webpack_require__(35);
+var _graphqlTag = __webpack_require__(28);
 
 var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
 
@@ -14459,7 +14456,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(5);
 
-var _reactApollo = __webpack_require__(23);
+var _reactApollo = __webpack_require__(19);
 
 var _provideInjector = __webpack_require__("./client/src/lib/dependency-injection/provideInjector.js");
 
@@ -16685,7 +16682,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FormAlert = __webpack_require__(19);
+var _FormAlert = __webpack_require__(18);
 
 var _FormAlert2 = _interopRequireDefault(_FormAlert);
 
@@ -21133,7 +21130,7 @@ var _merge = __webpack_require__(22);
 
 var _merge2 = _interopRequireDefault(_merge);
 
-var _FormBuilder = __webpack_require__(34);
+var _FormBuilder = __webpack_require__(35);
 
 var _FormBuilder2 = _interopRequireDefault(_FormBuilder);
 
@@ -21538,7 +21535,7 @@ var _FormBuilderModal = __webpack_require__(27);
 
 var _FormBuilderModal2 = _interopRequireDefault(_FormBuilderModal);
 
-var _fileSchemaModalHandler = __webpack_require__(32);
+var _fileSchemaModalHandler = __webpack_require__(33);
 
 var _fileSchemaModalHandler2 = _interopRequireDefault(_fileSchemaModalHandler);
 
@@ -21828,7 +21825,7 @@ var _es6Promise = __webpack_require__("./node_modules/es6-promise/dist/es6-promi
 
 var _es6Promise2 = _interopRequireDefault(_es6Promise);
 
-var _qs = __webpack_require__(30);
+var _qs = __webpack_require__(31);
 
 var _qs2 = _interopRequireDefault(_qs);
 
@@ -22142,7 +22139,7 @@ var _i18n = __webpack_require__(2);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _qs = __webpack_require__(30);
+var _qs = __webpack_require__(31);
 
 var _qs2 = _interopRequireDefault(_qs);
 
@@ -23668,14 +23665,14 @@ module.exports = moment;
 /***/ 18:
 /***/ (function(module, exports) {
 
-module.exports = Config;
+module.exports = FormAlert;
 
 /***/ }),
 
 /***/ 19:
 /***/ (function(module, exports) {
 
-module.exports = FormAlert;
+module.exports = ReactApollo;
 
 /***/ }),
 
@@ -23710,7 +23707,7 @@ module.exports = merge;
 /***/ 23:
 /***/ (function(module, exports) {
 
-module.exports = ReactApollo;
+module.exports = Config;
 
 /***/ }),
 
@@ -23738,56 +23735,56 @@ module.exports = FormBuilderModal;
 /***/ 28:
 /***/ (function(module, exports) {
 
-module.exports = ReactRouterRedux;
+module.exports = GraphQLTag;
 
 /***/ }),
 
 /***/ 29:
 /***/ (function(module, exports) {
 
-module.exports = TreeDropdownField;
+module.exports = ReactRouterRedux;
 
 /***/ }),
 
 /***/ 30:
 /***/ (function(module, exports) {
 
-module.exports = qs;
+module.exports = TreeDropdownField;
 
 /***/ }),
 
 /***/ 31:
 /***/ (function(module, exports) {
 
-module.exports = Badge;
+module.exports = qs;
 
 /***/ }),
 
 /***/ 32:
 /***/ (function(module, exports) {
 
-module.exports = FileSchemaModalHandler;
+module.exports = Badge;
 
 /***/ }),
 
 /***/ 33:
 /***/ (function(module, exports) {
 
-module.exports = FormAction;
+module.exports = FileSchemaModalHandler;
 
 /***/ }),
 
 /***/ 34:
 /***/ (function(module, exports) {
 
-module.exports = FormBuilder;
+module.exports = FormAction;
 
 /***/ }),
 
 /***/ 35:
 /***/ (function(module, exports) {
 
-module.exports = GraphQLTag;
+module.exports = FormBuilder;
 
 /***/ }),
 

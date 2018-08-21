@@ -9,30 +9,36 @@ class ReactGridField extends React.Component {
 
   render() {
     const {
-      data: { graphqlQuery, queryName, components },
+      data: { graphqlQuery, queryName, components, graphqlVariables },
     } = this.props;
 
     return (
-      <Query query={gql(graphqlQuery)}>
+      <Query query={gql(graphqlQuery)} variables={graphqlVariables}>
         {(graphql) => {
           const { loading, data } = graphql;
           const queryResult = data[queryName];
+          const renderComponent = ({component}) => {
+            const Component = this.context.injector.get(component);
+            return (
+              <Component
+                key={component}
+                graphql={graphql}
+                variables={graphqlVariables}
+                queryResult={queryResult}
+              />
+            );
+          };
+
 
           return (
             <div>
               <div className="gridfield-before-components">
-                {components.filter(c => c.position === 'before').map(({component}) => {
-                  const Component = this.context.injector.get(component);
-                  return <Component key={component} graphql={graphql} queryResult={queryResult} />
-                })}
+                {components.filter(c => c.position === 'before').map(renderComponent)}
               </div>
               {loading && <h3>Loading....</h3>}
               <table width="80%">
                 <thead>
-                {components.filter(c => c.position === 'header').map(({component}) => {
-                  const Component = this.context.injector.get(component);
-                  return <Component key={component} graphql={graphql} queryResult={queryResult} />
-                })}
+                {components.filter(c => c.position === 'header').map(renderComponent)}
                 </thead>
                 <tbody>
                 {!loading && queryResult && queryResult.edges.map(({node}) => (
@@ -45,10 +51,7 @@ class ReactGridField extends React.Component {
                 </tbody>
               </table>
               <div className="gridfield-after-components">
-                {components.filter(c => c.position === 'after').map(({component}) => {
-                  const Component = this.context.injector.get(component);
-                  return <Component key={component} graphql={graphql} queryResult={queryResult} />
-                })}
+                {components.filter(c => c.position === 'after').map(renderComponent)}
               </div>
             </div>
           );

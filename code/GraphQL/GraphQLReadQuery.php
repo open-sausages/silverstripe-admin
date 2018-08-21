@@ -6,9 +6,8 @@ use GraphQL\Type\Definition\Type;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\Scaffolding\Scaffolders\CRUD\Read;
-use SilverStripe\ORM\DataList;
+use Exception;
 use BadMethodCallException;
-use SilverStripe\ORM\DataObject;
 
 class GraphQLReadQuery extends GraphQLQuery
 {
@@ -49,7 +48,7 @@ class GraphQLReadQuery extends GraphQLQuery
      */
     public function setModelClass($class)
     {
-        $this->modelClass = $class
+        $this->modelClass = $class;
 
         return $this;
     }
@@ -82,30 +81,30 @@ class GraphQLReadQuery extends GraphQLQuery
     }
 
     /**
-     * @param string $name
-     * @throws BadMethodCallException
-     * @return void
-     */
-    public function setQueryName($name)
-    {
-        throw new BadMethodCallException('Cannot set query name for a scaffolded query');
-    }
-
-    /**
      * @return GraphQLData
+     * @throws BadMethodCallException
+     * @throws Exception
      */
     public function getQueryData()
     {
+        if ($this->queryName) {
+            user_error('Cannot set query name for a scaffolded query. It gets overridden.', E_NOTICE);
+        }
         $class = $this->getModelClass();
         /* @var Read $scaffolder */
         $scaffolder = Injector::inst()->createWithArgs(Read::class, [$class]);
         $name = $scaffolder->getName();
         $query = $this->getManager()->getQuery($name);
+        if (!$query) {
+            throw new Exception(sprintf('Could not find query %s for %s.', $name, $class));
+        }
+        if (is_callable($query)) {
+            $query = call_user_func($query);
+        }
 
-        $data = parent::getQueryData();
-        $data->UsePagination = $this->getUsePagination();
-
-        return $data->setTemplate(static::class);
+        $this->setArgs($this->normaliseArgs($query['args']))
+             ->setQueryName($name);
+        return parent::getQueryData();
     }
 
     /**
