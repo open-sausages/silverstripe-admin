@@ -2,11 +2,14 @@
 
 namespace SilverStripe\Admin\GraphQL;
 
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 
 class GraphQLQuery
 {
+    use Injectable;
+
     /**
      * @var string
      */
@@ -31,6 +34,16 @@ class GraphQLQuery
      * @var array
      */
     protected $variables = [];
+
+    /**
+     * @var bool
+     */
+    protected $isMutation = false;
+
+    /**
+     * @var string
+     */
+    protected $template = 'GraphQLQuery';
 
     /**
      * GraphQLQuery constructor.
@@ -124,6 +137,25 @@ class GraphQLQuery
     }
 
     /**
+     * @param $template
+     * @return $this
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
      * @param array $vars
      * @return $this
      */
@@ -152,9 +184,29 @@ class GraphQLQuery
             'QueryName' => $this->getQueryName(),
             'Fields' => $this->createFieldList(),
             'Args' => $this->createArgList(),
+            'IsMutation' => $this->isMutation(),
         ]);
 
-        return $data->setTemplate(static::class);
+        return $data->setTemplate(__NAMESPACE__ . '\\' . $this->getTemplate());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMutation()
+    {
+        return $this->isMutation;
+    }
+
+    /**
+     * @param $bool
+     * @return $this
+     */
+    public function setIsMutation($bool)
+    {
+        $this->isMutation = (boolean) $bool;
+
+        return $this;
     }
 
     /**
@@ -163,6 +215,7 @@ class GraphQLQuery
     protected function createFieldList()
     {
         $list = ArrayList::create();
+        $list->push(ArrayData::create(['FieldName' => 'ID']));
         foreach ($this->fields as $field) {
             $list->push(ArrayData::create(['FieldName' => $field]));
         }

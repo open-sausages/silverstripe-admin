@@ -11,9 +11,7 @@ import CheckboxField from 'components/CheckboxField/CheckboxField';
 import CheckboxSetField from 'components/CheckboxSetField/CheckboxSetField';
 import OptionsetField from 'components/OptionsetField/OptionsetField';
 import GridField from 'components/GridField/GridField';
-import ReactGridField from 'components/GridField/ReactGridField';
-import GridFieldHeaderComponentSlot from 'components/GridField/GridFieldHeaderComponentSlot';
-import GridFieldComponentSlot from 'components/GridField/GridFieldComponentSlot';
+import ReactGridField from 'components/GridField/React/GridField';
 import GridFieldActions from 'components/GridFieldActions/GridFieldActions';
 import SingleSelectField from 'components/SingleSelectField/SingleSelectField';
 import PopoverField from 'components/PopoverField/PopoverField';
@@ -80,8 +78,5 @@ export default () => {
     Search,
     SearchToggle,
     ReactGridField,
-    GridFieldBeforeComponents: GridFieldComponentSlot,
-    GridFieldAfterComponents: GridFieldComponentSlot,
-    GridFieldHeaderComponents: GridFieldHeaderComponentSlot,
   });
 };
