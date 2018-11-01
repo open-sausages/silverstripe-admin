@@ -48,6 +48,7 @@ class SearchForm extends Component {
             formTag="div"
             identifier={identifier}
             schemaUrl={formSchemaUrl}
+            refetchSchemaOnMount={false}
             onSubmit={() => { onSearch(); return Promise.resolve(); }}
           />}
           <Button
