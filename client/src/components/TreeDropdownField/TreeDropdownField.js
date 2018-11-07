@@ -15,7 +15,7 @@ import { findTreeByPath, findTreeByID, findTreePath } from './treeUtils';
 const SEARCH_DELAY = 500; // ms
 
 // legacy value for multi-select's empty value
-const MULTI_EMPTY_VALUE = 'unchanged';
+const MULTI_EMPTY_VALUE = null;
 
 const SINGLE_EMPTY_VALUE = 0;
 

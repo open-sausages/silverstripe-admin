@@ -233,7 +233,7 @@ describe('TreeDropdownField', () => {
         );
       });
 
-      it('should return "unchanged" for no selected values', () => {
+      it('should return "MULTI_EMPTY_VALUE" for no selected values', () => {
         field.handleChange([]);
 
         expect(field.handleSearchReset).toBeCalled();
