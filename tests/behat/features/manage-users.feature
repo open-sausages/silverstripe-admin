@@ -24,7 +24,7 @@ Feature: Manage users
       And I should see the "Unlink" button in the "Members" gridfield for the "ADMIN" row
     Then I click the "Unlink" button in the "Members" gridfield for the "ADMIN" row
       And I should not see the "Unlink" button in the "Members" gridfield for the "ADMIN" row
-    Then I click "Groups" in the ".breadcrumbs-wrapper" element
+    Then I click "Groups" in the ".breadcrumbs-wrapper" element, confirming the dialog
       And I click the "Groups" CMS tab
       And I click "ADMIN group" in the "#Root_Groups" element
       And I should not see the "Unlink" button in the "Members" gridfield for the "ADMIN" row
