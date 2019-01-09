@@ -6,10 +6,22 @@ SilverStripe\Core\Injector\Injector:
     class: SilverStripe\GraphQL\Manager
     constructor:
       identifier: admin
+      schemaStore: '%$SilverStripe\GraphQL\Storage\SchemaStorageInterface.admin'
     properties:
       Middlewares:
         CSRFMiddleware: '%$SilverStripe\GraphQL\Middleware\QueryMiddleware.csrf'
         HTTPMethodMiddleware: '%$SilverStripe\GraphQL\Middleware\QueryMiddleware.httpMethod'
+  SilverStripe\GraphQL\Storage\SchemaStorageInterface.admin:
+    class: SilverStripe\GraphQL\Storage\Encode\CodeGenerationSchemaStore
+    constructor:
+      registryEncoder: '%$SilverStripe\GraphQL\Storage\Encode\TypeRegistryEncoderInterface.admin'
+  SilverStripe\GraphQL\Storage\Encode\TypeRegistryEncoderInterface.default:
+    class: SilverStripe\GraphQL\Storage\Encode\GraphQLPHPTypeRegistryEncoder
+    constructor:
+      identifier: default
+      objectTypeEncoder: '%$SilverStripe\GraphQL\Storage\Encode\TypeEncoderInterface.objectType'
+      unionTypeEncoder: '%$SilverStripe\GraphQL\Storage\Encode\TypeEncoderInterface.unionType'
+      enumTypeEncoder: '%$SilverStripe\GraphQL\Storage\Encode\TypeEncoderInterface.enumType'
   SilverStripe\GraphQL\Controller.admin:
     class: SilverStripe\GraphQL\Controller
     constructor:
