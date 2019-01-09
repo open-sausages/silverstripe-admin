@@ -3,13 +3,13 @@ Name: admin-graphql-routes
 Only:
   moduleexists: silverstripe/graphql
 ---
-SilverStripe\Control\Director:
-  rules:
-    'admin/graphql':
-      Controller: '%$SilverStripe\GraphQL\Controller.admin'
-      Stage: Stage
-      Permissions:
-        CMS_ACCESS: CMS_ACCESS
+#SilverStripe\Control\Director:
+#  rules:
+#    'admin/graphql':
+#      Controller: '%$SilverStripe\GraphQL\Controller.admin'
+#      Stage: Stage
+#      Permissions:
+#        CMS_ACCESS: CMS_ACCESS
 ---
 Name: adminroutes
 After:
