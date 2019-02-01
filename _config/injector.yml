@@ -5,7 +5,8 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\Manager.admin:
     class: SilverStripe\GraphQL\Manager
     constructor:
-      identifier: admin
+      schemaKey: admin
+      schemaStore: '%$SilverStripe\GraphQL\Schema\SchemaStorageInterface.default'
     properties:
       Middlewares:
         CSRFMiddleware: '%$SilverStripe\GraphQL\Middleware\QueryMiddleware.csrf'
